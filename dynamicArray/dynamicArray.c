@@ -227,14 +227,73 @@ int dynamicArrayDeleteAppointPosData(dynamicArray *pArray, int pos)
 /* 动态数组删除指定的元素 */
 int dynamicArrayDeleteAppointData(dynamicArray *pArray, ELEMENTTYPE val)
 {
-    
+    /* todo... */
+#if 0
+    int idx = 0;
+    for (idx; idx < pArray->len; idx++)
+    {
+        if (val == pArray->data[idx])
+        {
+            dynamicArrayDeleteAppointPosData(pArray, idx);
+            /* 从头开始 */
+            idx = 0;
+        }
+    }
+#else   
+    for (int idx = pArray->len - 1; idx >= 0; idx--)
+    {
+        if (val == pArray->data[idx])
+        {
+            dynamicArrayDeleteAppointPosData(pArray, idx);
+        }
+    }
+#endif
+    return ON_SUCCESS;
 }
 
 /* 动态数组的销毁 */
-int dynamicArrayDestroy(dynamicArray *pArray);
+int dynamicArrayDestroy(dynamicArray *pArray)
+{
+    if (pArray == NULL)
+    {
+        return NULL_PTR;
+    }
+
+    if (pArray->data != NULL)
+    {
+        free(pArray->data);
+        pArray->data = NULL;
+    }
+    return ON_SUCCESS;
+}
 
 /* 获取数组的大小 */
-int dynamicArrayGetSize(dynamicArray *pArray, int *pSize);
+int dynamicArrayGetSize(dynamicArray *pArray, int *pSize)
+{
+    if (pArray == NULL)
+    {
+        return NULL_PTR;
+    }
+
+    /* 解引用 */
+    if (pSize != NULL)
+    {
+        *pSize = pArray->len;
+    }
+    return ON_SUCCESS;
+}
 
 /* 获取数组的容量 */
-int dynamicArrayGetCapacity(dynamicArray *pArray, int *pCapacity);
+int dynamicArrayGetCapacity(dynamicArray *pArray, int *pCapacity)
+{
+    if (pArray == NULL)
+    {
+        return NULL_PTR;
+    }
+
+    if (pCapacity != NULL)
+    {
+        *pCapacity = pArray->capacity;
+    }
+    return ON_SUCCESS;
+}
