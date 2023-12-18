@@ -297,3 +297,24 @@ int dynamicArrayGetCapacity(dynamicArray *pArray, int *pCapacity)
     }
     return ON_SUCCESS;
 }
+
+/* 获取指定位置的元素数据 */
+int dynamicArrayGetAppointPosVal(dynamicArray *pArray, int pos, ELEMENTTYPE *pVal)
+{
+    /* 判空 */
+    if (pArray == NULL)
+    {
+        return NULL_PTR;
+    }   
+    /* 判断位置的合法性 */
+    if (pos < 0 || pos >= pArray->len)
+    {
+        return INVALID_ACCESS;
+    }
+    
+    if (pVal)
+    {
+        *pVal = pArray->data[pos];
+    }
+    return ON_SUCCESS;
+}
