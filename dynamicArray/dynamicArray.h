@@ -1,7 +1,12 @@
 #ifndef __DYNAMIC_ARRAY_H_
 #define __DYNAMIC_ARRAY_H_
 
-typedef int ELEMENTTYPE;
+#if 1
+#define ELEMENTTYPE void*
+#else
+typedef void * ELEMENTTYPE;
+#endif 
+
 
 /* 避免头文件重复包含 */
 typedef struct dynamicArray

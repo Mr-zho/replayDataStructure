@@ -1,8 +1,9 @@
 #include <stdio.h>
 #include "dynamicArray.h"
+#include <string.h>
 
 #define BUFFER_SIZE 20
-#define DEFAULT_NUM 5
+#define DEFAULT_NUM 3
 
 typedef struct stuInfo
 {
@@ -19,10 +20,10 @@ int main()
     /* 模块化 */
     {
         /* 插入数据 */
-        dynamicArrayInsertData(&array, 3);
+        // dynamicArrayInsertData(&array, 3);
         for (int idx = 1; idx <= DEFAULT_NUM; idx++)
         {
-            dynamicArrayInsertData(&array, 21);
+            dynamicArrayInsertData(&array, idx);
         }
     }
 
@@ -83,6 +84,40 @@ int main()
         }    
         printf("\n");
     }
+#elif 0
+    int buffer[DEFAULT_NUM] = {1, 2, 3};
+    for (int idx = 0; idx < DEFAULT_NUM; idx++)
+    {
+        dynamicArrayInsertData(&array, (void *)&buffer[idx]);
+    }
+    
+    int size = 0;
+    dynamicArrayGetSize(&array, &size);
+    printf("size:%d\n", size);
+
+    int *val = NULL;
+    for (int idx = 0; idx < DEFAULT_NUM; idx++)
+    {
+        dynamicArrayGetAppointPosVal(&array, idx, (void *)&val);
+        printf("val:%d\n", *val);
+    }
+#elif 1
+    int idx = 0;
+    for (idx; idx < DEFAULT_NUM; idx++)
+    {
+        dynamicArrayInsertData(&array, (void *)&idx);
+    }
+    
+    int size = 0;
+    dynamicArrayGetSize(&array, &size);
+    printf("size:%d\n", size);
+
+    int *val = NULL;
+    for (int idx = 0; idx < DEFAULT_NUM; idx++)
+    {
+        dynamicArrayGetAppointPosVal(&array, idx, (void *)&val);
+        printf("val:%d\n", *val);
+    }
 #else
     stuInfo stu1, stu2, stu3;
     memset(&stu1, 0, sizeof(stu1));
@@ -98,10 +133,22 @@ int main()
     stu3.age = 30;
     stu3.sex = 'm';
 
-    // dynamicArrayInsertData(&array, stu1);
-    // dynamicArrayInsertData(&array, stu2);
-    // dynamicArrayInsertData(&array, stu3);
+    stuInfo buffer[DEFAULT_NUM] = {stu1, stu2, stu3};
+    for (int idx = 0; idx < DEFAULT_NUM; idx++)
+    {
+        dynamicArrayInsertData(&array, (void *)&buffer[idx]);
+    }
 
+    int size = 0;
+    dynamicArrayGetSize(&array, &size);
+    printf("size:%d\n", size);
+
+    stuInfo *info = NULL;
+    for (int idx = 0; idx < DEFAULT_NUM; idx++)
+    {
+        dynamicArrayGetAppointPosVal(&array, idx, (void *)&info);
+        printf("info.age:%d\tinfo.sex:%c\n", info->age, info->sex);
+    }
 
 #endif
 
