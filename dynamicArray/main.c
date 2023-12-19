@@ -3,7 +3,7 @@
 #include <string.h>
 
 #define BUFFER_SIZE 20
-#define DEFAULT_NUM 3
+#define DEFAULT_NUM 6
 
 typedef struct stuInfo
 {
@@ -11,6 +11,14 @@ typedef struct stuInfo
     char sex;
 } stuInfo; 
 
+
+int compareData(void *arg1, void *arg2)
+{
+    int num1 = *(int *)arg1;
+    int num2 = *(int *)arg2;
+
+    return num1 == num2 ? 1 : 0;
+}
 int main()
 {
     dynamicArray array;
@@ -84,24 +92,57 @@ int main()
         }    
         printf("\n");
     }
-#elif 0
-    int buffer[DEFAULT_NUM] = {1, 2, 3};
+#elif  1
+    int buffer[DEFAULT_NUM] = {1, 2, 1, 1, 15, 3};
     for (int idx = 0; idx < DEFAULT_NUM; idx++)
     {
         dynamicArrayInsertData(&array, (void *)&buffer[idx]);
     }
     
+    /* 指定位置插 */
+    int randomNum = 666;
+    dynamicArrayAppointPosInsertData(&array, 1, (void *)&randomNum);
+    
     int size = 0;
     dynamicArrayGetSize(&array, &size);
     printf("size:%d\n", size);
 
+    
     int *val = NULL;
-    for (int idx = 0; idx < DEFAULT_NUM; idx++)
+    for (int idx = 0; idx < dynamicArrayGetSize(&array, &size); idx++)
     {
         dynamicArrayGetAppointPosVal(&array, idx, (void *)&val);
         printf("val:%d\n", *val);
     }
-#elif 1
+    printf("\n\n\n");
+    dynamicArrayDeleteData(&array);
+    dynamicArrayGetSize(&array, &size);
+    printf("size:%d\n", size);
+
+    for (int idx = 0; idx < dynamicArrayGetSize(&array, &size); idx++)
+    {
+        dynamicArrayGetAppointPosVal(&array, idx, (void *)&val);
+        printf("val:%d\n", *val);
+    }
+
+
+    printf("\n\n\n");
+    dynamicArrayDeleteAppointPosData(&array, 1);
+    for (int idx = 0; idx < dynamicArrayGetSize(&array, &size); idx++)
+    {
+        dynamicArrayGetAppointPosVal(&array, idx, (void *)&val);
+        printf("val:%d\n", *val);
+    }
+
+    printf("\n\n\n");
+    int delnum = 1;
+    dynamicArrayDeleteAppointData(&array, &delnum, compareData);
+    for (int idx = 0; idx < dynamicArrayGetSize(&array, &size); idx++)
+    {
+        dynamicArrayGetAppointPosVal(&array, idx, (void *)&val);
+        printf("val:%d\n", *val);
+    }
+#elif 0
     int idx = 0;
     for (idx; idx < DEFAULT_NUM; idx++)
     {

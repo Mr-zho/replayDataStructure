@@ -225,7 +225,7 @@ int dynamicArrayDeleteAppointPosData(dynamicArray *pArray, int pos)
 }
 
 /* 动态数组删除指定的元素 */
-int dynamicArrayDeleteAppointData(dynamicArray *pArray, ELEMENTTYPE val)
+int dynamicArrayDeleteAppointData(dynamicArray *pArray, ELEMENTTYPE val, int (*compareFunc)(ELEMENTTYPE val1, ELEMENTTYPE val2))
 {
     /* todo... */
 #if 0
@@ -242,10 +242,18 @@ int dynamicArrayDeleteAppointData(dynamicArray *pArray, ELEMENTTYPE val)
 #else   
     for (int idx = pArray->len - 1; idx >= 0; idx--)
     {
-        if (val == pArray->data[idx])
+        #if 0
+        if (*(int *)val == *(int*)(pArray->data[idx]))
         {
             dynamicArrayDeleteAppointPosData(pArray, idx);
         }
+        #else
+        int ret = compareFunc(val, pArray->data[idx]);
+        if (ret == 1)
+        {
+            dynamicArrayDeleteAppointPosData(pArray, idx);
+        }
+        #endif
     }
 #endif
     return ON_SUCCESS;
@@ -280,7 +288,7 @@ int dynamicArrayGetSize(dynamicArray *pArray, int *pSize)
     {
         *pSize = pArray->len;
     }
-    return ON_SUCCESS;
+    return pArray->len;
 }
 
 /* 获取数组的容量 */
@@ -317,4 +325,12 @@ int dynamicArrayGetAppointPosVal(dynamicArray *pArray, int pos, ELEMENTTYPE *pVa
         *pVal = pArray->data[pos];
     }
     return ON_SUCCESS;
+}
+
+/* 数组排序 */
+int dynamicArrayAppointWaySort(dynamicArray *pArray, int (*compareFunc)(ELEMENTTYPE val1, ELEMENTTYPE val2))
+{
+    int ret = 0;
+
+    return ret;
 }
