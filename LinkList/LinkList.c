@@ -60,3 +60,9 @@ int LinkListDestroy(LinkList * pList)
 {
     
 }
+
+/* 链表遍历接口 */
+int LinkListForeach(LinkList * pList)
+{
+    
+}
