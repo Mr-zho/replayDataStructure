@@ -44,19 +44,63 @@ int LinkListInit(LinkList **pList)
 /* 链表头插 */
 int LinkListHeadInsert(LinkList * pList, ELEMENTTYPE val)
 {
-    
+    return LinkListAppointPosInsert(pList, 0, val);
 }
 
 /* 链表尾插 */
 int LinkListTailInsert(LinkList * pList, ELEMENTTYPE val)
 {
-    
+    /* todo... */
+    return LinkListAppointPosInsert(pList, pList->len, val);
 }
 
 /* 链表指定位置插入 */
 int LinkListAppointPosInsert(LinkList * pList, int pos, ELEMENTTYPE val)
 {
+    int ret = 0;
+    if (pList == NULL)
+    {
+        return NULL_PTR;
+    }
     
+    if (pos < 0 || pos > pList->len)
+    {
+        return INVALID_ACCESS;
+    }
+
+    /* 封装结点 */
+    LinkNode * newNode = (LinkNode *)malloc(sizeof(LinkNode) * 1);
+    if (newNode == NULL)
+    {
+        return MALLOC_ERROR;
+    }
+    /* 清除脏数据 */
+    memset(newNode, 0, sizeof(LinkNode) * 1);
+#if 1
+    newNode->data = 0;
+    newNode->next = NULL;
+#endif
+    /* 赋值 */
+    newNode->data = val;
+
+#if 1
+    /* 从虚拟头结点开始遍历 */
+    LinkNode * travelNode = pList->head;
+#else
+    LinkNode * travelNode = pList->head->next;
+#endif
+    while (pos)
+    {
+        travelNode = travelNode->next;
+        pos--;
+    }
+    /* 修改结点指向 */
+    newNode->next = travelNode->next;
+    travelNode->next = newNode;
+
+    /* 更新链表的长度 */
+    (pList->len)++;
+    return ret;
 }
 
 /* 链表头删 */
@@ -86,7 +130,17 @@ int LinkListDelAppointData(LinkList * pList, ELEMENTTYPE val)
 /* 获取链表的长度 */
 int LinkListGetLength(LinkList * pList, int *pSize)
 {
-    
+    int ret = 0;
+    if (pList == NULL)
+    {
+        return NULL_PTR;
+    }
+
+    if (pSize)
+    {
+        *pSize = pList->len;
+    }
+    return ret;
 }
 
 /* 链表的销毁 */
@@ -98,5 +152,5 @@ int LinkListDestroy(LinkList * pList)
 /* 链表遍历接口 */
 int LinkListForeach(LinkList * pList)
 {
-
+    
 }
