@@ -1,5 +1,5 @@
 #include <stdio.h>
-// #include "LinkList.h"
+#include "LinkList.h"
 #include <string.h>
 
 #define BUFFER_SIZE    20
@@ -15,6 +15,6 @@ int main()
 #endif
 
 
-    
+
     return 0;
 }
