@@ -32,6 +32,8 @@ int LinkListInit(LinkList **pList)
     memset(list->head, 0, sizeof(LinkNode) * 1);
     list->head->data = 0;
     list->head->next = NULL;
+    /* 初始化的时候, 尾指针 = 头指针 */
+    list->tail = list->head;
 
     /* 链表的长度为0 */
     list->len = 0;
@@ -89,14 +91,34 @@ int LinkListAppointPosInsert(LinkList * pList, int pos, ELEMENTTYPE val)
 #else
     LinkNode * travelNode = pList->head->next;
 #endif
-    while (pos)
+
+    int flag = 0;
+    /* 这种情况下需要更改尾指针 */
+    if (pos == pList->len)
     {
-        travelNode = travelNode->next;
-        pos--;
+        /* 修改结点指向 */
+        travelNode = pList->tail;
+#if 0
+        newNode->next = travelNode->next;   // 1
+        travelNode->next = newNode;         // 2
+#endif
+        flag = 1;
     }
-    /* 修改结点指向 */
-    newNode->next = travelNode->next;
-    travelNode->next = newNode;
+    else
+    {
+        while (pos)
+        {
+            travelNode = travelNode->next;
+            pos--;
+        }
+    }
+    newNode->next = travelNode->next;       // 1
+    travelNode->next = newNode;             // 2
+    if (flag)
+    {
+        /* 尾指针更新位置 */
+        pList->tail = newNode;
+    }
 
     /* 更新链表的长度 */
     (pList->len)++;

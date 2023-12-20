@@ -19,7 +19,7 @@ typedef struct LinkList
 {
     /* 链表的虚拟头结点 */
     LinkNode * head;
-    
+    LinkNode * tail;        /* 为什么尾指针不需要分配空间??? */
     /* 链表的长度 */
     int len;
 } LinkList;
