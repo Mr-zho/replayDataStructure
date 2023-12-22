@@ -15,7 +15,7 @@ enum STATUS_CODE
 
 /* 静态函数只在本源文件(.c)使用 */
 /* 静态前置声明 */
-static int LinkListAccordAppointValGetPos(LinkList * pList, ELEMENTTYPE val, int *pPos);
+static int LinkListAccordAppointValGetPos(LinkList * pList, ELEMENTTYPE val, int *pPos, int (*compareFunc)(ELEMENTTYPE, ELEMENTTYPE));
 
 /* 链表初始化 */
 int LinkListInit(LinkList **pList)
@@ -199,7 +199,7 @@ int LinkListDelAppointPos(LinkList * pList, int pos)
 }
 
 /* 根据指定的元素得到在链表中所在的位置 */
-static int LinkListAccordAppointValGetPos(LinkList * pList, ELEMENTTYPE val, int *pPos)
+static int LinkListAccordAppointValGetPos(LinkList * pList, ELEMENTTYPE val, int *pPos, int (*compareFunc)(ELEMENTTYPE, ELEMENTTYPE))
 {
     /* 静态函数只给本源文件的函数使用, 不需要判断合法性 */
     int ret;
@@ -211,14 +211,26 @@ static int LinkListAccordAppointValGetPos(LinkList * pList, ELEMENTTYPE val, int
     int pos = 1;
     LinkNode *travelNode = pList->head->next;
 #endif
+    
+    int cmp = 0;
     while (travelNode != NULL)
     {
+        #if 0
         if (travelNode->data == val)
         {
             /* 解引用 */
             *pPos = pos;
             return pos;
         }
+        #else
+        cmp = compareFunc(val, travelNode->data);
+        if (cmp == 0)
+        {
+            /* 解引用 */
+            *pPos = pos;
+            return pos;
+        }
+        #endif
         travelNode = travelNode->next;
         pos++;
     }
@@ -229,7 +241,7 @@ static int LinkListAccordAppointValGetPos(LinkList * pList, ELEMENTTYPE val, int
 }
 
 /* 链表删除指定的数据 */
-int LinkListDelAppointData(LinkList * pList, ELEMENTTYPE val)
+int LinkListDelAppointData(LinkList * pList, ELEMENTTYPE val, int (*compareFunc)(ELEMENTTYPE, ELEMENTTYPE))
 {
     int ret = 0;
     /* 元素在链表中的位置 */
@@ -240,7 +252,7 @@ int LinkListDelAppointData(LinkList * pList, ELEMENTTYPE val)
     while (LinkListGetLength(pList, &size) && pos != NOT_FIND)
     {
         /* 根据指定的元素得到在链表中所在的位置 */
-        LinkListAccordAppointValGetPos(pList, val, &pos);
+        LinkListAccordAppointValGetPos(pList, val, &pos, compareFunc);
         LinkListDelAppointPos(pList, pos);
     }
     return ret;
