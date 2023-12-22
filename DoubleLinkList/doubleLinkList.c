@@ -370,3 +370,32 @@ int DoubleLinkListForeach(DoubleLinkList * pList, int (*printFunc)(ELEMENTTYPE))
     return ret;
 }
 #endif
+
+
+int DoubleLinkListReverseForeach(DoubleLinkList * pList, int (*printFunc)(ELEMENTTYPE))
+{
+    int ret = 0;
+    
+    /* 标记到尾指针 */
+    DoubleLinkNode * travelNode = pList->tail;
+#if 1
+    while (travelNode != pList->head)
+    {
+        /* 包装器 . 钩子🪝 . 回调函数 */
+        printFunc(travelNode->data);
+        /* 移动前指针 */
+        travelNode = travelNode->prev;
+    }
+#else
+    int size = 0;
+    DoubleLinkListGetLength(pList, &size);
+    for (int idx = 0; idx < size; idx++)
+    {
+        /* 包装器 . 钩子🪝 . 回调函数 */
+        printFunc(travelNode->data);
+        /* 移动前指针 */
+        travelNode = travelNode->prev;
+    }
+#endif
+    return ret;
+}
