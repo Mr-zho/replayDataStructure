@@ -1,8 +1,7 @@
 #ifndef __DoubleLinkList_QUEUE_H_
 #define __DoubleLinkList_QUEUE_H_
 
-#include "doubleLinkList.h"
-
+#include "common.h"
 typedef DoubleLinkList DoubleLinkListQueue;
 
 /* 队列初始化 */
