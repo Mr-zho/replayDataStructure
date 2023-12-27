@@ -138,7 +138,23 @@ static BSTreeNode * bstreeNodePreDecessor(BSTreeNode *node)
 /* 获取当前结点的后继结点 */
 static BSTreeNode * bstreeNodeSuccessor(BSTreeNode *node)
 {
-    
+    if (node->right != NULL)
+    {
+        /* 后继结点是在右子树的左子树的左子树的左子树... */
+        BSTreeNode *travelNode = node->right;
+        while (travelNode->left!= NULL)
+        {
+            travelNode = travelNode->left;
+        }
+        return travelNode;
+    }
+
+    /* 程序执行到这个地方, 说明一定没有右子树。 那就需要向父结点找 */
+    while (node->parent != NULL && node == node->parent->right)
+    {
+        node = node->parent;
+    }
+    return node->parent;
 }
 
 
