@@ -85,6 +85,9 @@ int binarySearchTreeInit(BinarySearchTree **pBstree, int (*compareFunc)(ELEMENTT
     }
     #endif
     
+    #if 0
+    doubleLinkListQueueInit(&(bstree->pQueue));
+    #endif
     *pBstree = bstree;
     return ret;
 }
@@ -435,18 +438,6 @@ int binarySearchTreeGetHeight(BinarySearchTree *pBstree, int *pHeight)
         return 0;
     }
     int ret;
-    #if 0
-    DoubleLinkListQueue *pQueue = NULL;
-    doubleLinkListQueueInit(pQueue);
-    
-    BSTreeNode * newNode =  pBstree->root;
-    BSTreeNode * Node = pBstree->root;
-
-    while ()
-    {
-        if()
-    }
-    #else
     DoubleLinkListQueue *pQueue = NULL;
     doubleLinkListQueueInit(&pQueue);
 
@@ -482,7 +473,6 @@ int binarySearchTreeGetHeight(BinarySearchTree *pBstree, int *pHeight)
             doubleLinkListQueueGetSize(pQueue, &levelSize);
         }
     }
-    #endif
     /* 解引用 */
     *pHeight = height;
 
@@ -496,5 +486,53 @@ int binarySearchTreeDelete(BinarySearchTree *pBstree, ELEMENTTYPE val)
 {
     int ret = 0;
     
+    return ret;
+}
+
+
+/* 二叉搜索树的销毁 */
+int binarySearchTreeDestroy(BinarySearchTree *pBstree)
+{
+    if (pBstree == NULL)
+    {
+        return NULL_PTR;
+    }
+
+    int ret;
+    DoubleLinkListQueue *pQueue = NULL;
+    doubleLinkListQueueInit(&pQueue);
+
+    BSTreeNode *travelNode = NULL;
+    while (!doubleLinkListQueueIsEmpty(pQueue))
+    {
+        doubleLinkListQueueTop(pQueue, (void **)&travelNode);
+        doubleLinkListQueuePop(pQueue);
+
+        if (travelNode->left != NULL)
+        {
+            doubleLinkListQueuePush(pQueue, travelNode->left);
+        }
+
+        if (travelNode->right != NULL)
+        {
+            doubleLinkListQueuePush(pQueue, travelNode->right);
+        }
+
+        /* 最后释放 */
+        if (travelNode)
+        {
+            free(travelNode);
+            travelNode = NULL;
+        }
+    }
+    /* 释放队列 */
+    doubleLinkListQueueDestroy(pQueue);
+
+    /* 释放树 */
+    if (pBstree)
+    {
+        free(pBstree);
+        pBstree = NULL;
+    }
     return ret;
 }
