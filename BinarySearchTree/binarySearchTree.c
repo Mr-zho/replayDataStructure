@@ -36,6 +36,8 @@ static int postOrderTravel(BinarySearchTree *pBstree, BSTreeNode *node);
 static BSTreeNode * bstreeNodePreDecessor(BSTreeNode *node);
 /* 获取当前结点的后继结点 */
 static BSTreeNode * bstreeNodeSuccessor(BSTreeNode *node);
+/* 二叉搜索树删除指定的结点 */
+static int binarySearchTreeDeleteNode(BinarySearchTree *pBstree, BSTreeNode *node);
 
 
 
@@ -500,11 +502,137 @@ int binarySearchTreeGetHeight(BinarySearchTree *pBstree, int *pHeight)
     return ret;
 }
 
+static int binarySearchTreeDeleteNode(BinarySearchTree *pBstree, BSTreeNode *node)
+{
+    int ret = 0;
+    if (node == NULL)
+    {
+        return ret;
+    }
+
+    /* 树的结点减一 */
+    (pBstree->size)--;
+    #if 0
+    BSTreeNode * delnode = NULL;
+
+    if (delnode = binarySearchTreeNodeHasTwochildrens(node))
+    (
+        BSTreeNode * travelNode = NULL;
+
+       bstreeNodePreDecessor(travelNode);
+       delnode->data = tra
+
+    )
+    if(delnode=binarySearchTreeNodeHasOnechildren(node))
+    {
+
+    }
+    #else
+    if (binarySearchTreeNodeHasTwochildrens(node))
+    {
+        /* 找到前驱结点 */
+        BSTreeNode * preNode = bstreeNodePreDecessor(node);
+        node->data = preNode->data;
+        node = preNode;
+    }
+
+    /* 程序执行到这里. 要删除的结点要么是度为1 要么是度为0. */
+#if 0
+    if (binarySearchTreeNodeHasOnechildren(node))
+    {
+
+    }
+    else if (binarySearchTreeNodeIsLeaf(node))
+    {
+
+    }
+#endif
+
+    /* 假设node结点是度为1的。它的child要么是左要么是右. */
+    /* 假设node结点是度为0的, */
+    BSTreeNode * child = node->left != NULL ? node->left : node->right;
+    if (child)
+    {
+        /* 度为1 */
+        child->parent = node->parent;
+        if (node->parent == NULL)
+        {
+            /* 度为1 且 它是根结点 */
+            pBstree->root = child;
+
+            if (node)
+            {   
+                free(node);
+                node = NULL;
+            }
+        }
+        else
+        {
+            /* 度为1 且 它不是根结点 */
+            if (node == node->parent->left)
+            {
+                node->parent->left = child;
+            }
+            else if (node == node->parent->right)
+            {
+                node->parent->right = child;
+            }
+            /* 释放结点 */
+            if (node)
+            {
+                free(node);
+                node = NULL;
+            }
+        }
+    }
+    else
+    {
+        /* 度为0 */
+        if (node->parent == NULL)
+        {
+            /* 度为0 且是根结点 */
+            if (node)
+            {
+                free(node);
+                node = NULL;
+            }
+        }
+        else
+        {
+            if (node == node->parent->left)
+            {
+                node->parent->left = NULL;
+            }
+            else if (node == node->parent->right)
+            {
+                node->parent->right = NULL;
+            }
+            
+            if (node)
+            {
+                free(node);
+                node = NULL;
+            }
+        }
+       
+    }
+    #endif
+}
+
 /* 二叉搜索树的删除 */
 int binarySearchTreeDelete(BinarySearchTree *pBstree, ELEMENTTYPE val)
 {
+    if (pBstree == NULL)
+    {
+        return NULL_PTR;
+    }
     int ret = 0;
-    
+    #if 0
+    BSTreeNode * delNode = baseAppointValGetBSTreeNode(pBstree, val);
+    return binarySearchTreeDeleteNode(pBstree, delNode);
+    #else
+    return binarySearchTreeDeleteNode(pBstree, baseAppointValGetBSTreeNode(pBstree, val));
+    #endif
     return ret;
 }
 
