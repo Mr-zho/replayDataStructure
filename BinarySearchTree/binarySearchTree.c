@@ -502,6 +502,8 @@ int binarySearchTreeDestroy(BinarySearchTree *pBstree)
     DoubleLinkListQueue *pQueue = NULL;
     doubleLinkListQueueInit(&pQueue);
 
+    /* 将根结点入队 */
+    doubleLinkListQueuePush(pQueue, pBstree->root);
     BSTreeNode *travelNode = NULL;
     while (!doubleLinkListQueueIsEmpty(pQueue))
     {
