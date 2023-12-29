@@ -51,8 +51,9 @@ static int AVLTreeNodeIsBalanced(AVLTreeNode *node);
 /* 更新结点的高度. */
 static int AVLTreeNodeUpdateHeight(AVLTreeNode *node);
 /* AVL树结点调整平衡 */
-static int AVLTreeNodAdjustBalance(BalanceBinarySearchTree *pBstree, AVLTreeNode *node);
-
+static int AVLTreeNodeAdjustBalance(BalanceBinarySearchTree *pBstree, AVLTreeNode *node);
+/* 获取AVL结点较高的子结点 */
+static AVLTreeNode * AVLTreeNodeGetChildTaller(AVLTreeNode *node);
 
 /* 二叉搜索树的初始化 */
 int balanceBinarySearchTreeInit(BalanceBinarySearchTree **pBstree, int (*compareFunc)(ELEMENTTYPE val1, ELEMENTTYPE val2), int (*printFunc)(ELEMENTTYPE val))
@@ -267,10 +268,67 @@ static int compareFunc(ELEMENTTYPE val1, ELEMENTTYPE val2)
 }
 #endif
 
-/* AVL树结点调整平衡 */
-static int AVLTreeNodAdjustBalance(BalanceBinarySearchTree *pBstree, AVLTreeNode *node)
+/* 获取AVL结点较高的子结点 */
+static AVLTreeNode * AVLTreeNodeGetChildTaller(AVLTreeNode *node)
 {
-    
+    /* 左子树高度 */
+    int leftHeight = node->left == NULL ? 0 : node->left->height;
+    /* 右子树高度 */
+    int rightHeight = node->right == NULL ? 0 : node->right->height;
+    if (leftHeight > rightHeight)
+    {
+        return node->left;
+    }
+    else if (leftHeight < rightHeight)
+    {
+        return node->right;
+    }
+    else
+    {
+        /* leftHeight == rightHeight */
+        if (node->parent != NULL && node == node->parent->left)
+        {
+            return node->left;
+        }
+        else
+        {
+            return node->right;
+        }
+    }
+}
+
+/* AVL树结点调整平衡 */
+/* node一定是最低的不平衡结点 */
+static int AVLTreeNodeAdjustBalance(BalanceBinarySearchTree *pBstree, AVLTreeNode *node)
+{
+    /* LL LR RL RR */
+    AVLTreeNode *parent = AVLTreeNodeGetChildTaller(node);
+    AVLTreeNode *child = AVLTreeNodeGetChildTaller(parent);
+
+    /* L */
+    if (parent == node->left)
+    {
+        if (child == parent->left)
+        {
+            /* LL */
+        }
+        else
+        {
+            /* LR */
+        }
+    }
+    else
+    {
+        /* R */
+        if (child == parent->left)
+        {
+            /* RL */
+        }
+        else
+        {
+            /* RR */
+        }
+    }
 }
 
 /* 添加结点之后的操作. */
@@ -291,7 +349,7 @@ static int insertNodeAfter(BalanceBinarySearchTree *pBstree, AVLTreeNode *node)
         {
             /* node是最低不平衡结点 */
             /* 调整平衡 */
-            AVLTreeNodAdjustBalance(pBstree, node);
+            AVLTreeNodeAdjustBalance(pBstree, node);
             
             /* 调整完最低的不平衡结点, 上面的不平衡结点就已经平衡. */
             break;
