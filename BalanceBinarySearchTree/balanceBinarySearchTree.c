@@ -59,7 +59,7 @@ static int AVLTreeCurrentNodeIsLeft(AVLTreeNode *node);
 /* 当前结点是父结点的右子树 */
 static int AVLTreeCurrentNodeIsRight(AVLTreeNode *node);
 /* 左旋 */
-static int AVLTreeCurrentNodeRotateLeft(BalanceBinarySearchTree *pBstree, AVLTreeNode *node);
+static int AVLTreeCurrentNodeRotateLeft(BalanceBinarySearchTree *pBstree, AVLTreeNode *grand);
 /* 右旋 */
 static int AVLTreeCurrentNodeRotateRight(BalanceBinarySearchTree *pBstree, AVLTreeNode *grand);
 
@@ -317,10 +317,43 @@ static AVLTreeNode * AVLTreeNodeGetChildTaller(AVLTreeNode *node)
     }
 }
 
-/* 左旋 */
-static int AVLTreeCurrentNodeRotateLeft(BalanceBinarySearchTree *pBstree, AVLTreeNode *node)
+/* 左旋 : RR */
+static int AVLTreeCurrentNodeRotateLeft(BalanceBinarySearchTree *pBstree, AVLTreeNode *grand)
 {
     int ret = 0;
+
+    AVLTreeNode * parent = grand->right;
+    AVLTreeNode * child = parent->left;
+
+    grand->right = child;        // 1
+    parent->left = grand;        // 2
+
+    /* p成为新的根结点 */
+    parent->parent = grand->parent;   // 3
+
+    if(AVLTreeCurrentNodeIsRight(grand))
+    {
+        grand->parent->right = parent;      // 4
+    }
+    else if (AVLTreeCurrentNodeIsLeft(grand))
+    {
+        grand->parent->left = parent;        // 4
+    }
+    else
+    {
+        /* 根结点 */
+        pBstree->root = parent;     // 4
+    }
+    grand->parent = parent;      // 5
+
+    if(child)
+    {
+        child->parent = grand;   //6
+    }
+
+    /* 更新高度 */
+    AVLTreeNodeUpdateHeight(grand);
+    AVLTreeNodeUpdateHeight(parent);
 
     return ret;
 }
