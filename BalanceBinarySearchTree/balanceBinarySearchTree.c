@@ -612,7 +612,15 @@ int balanceBinarySearchTreeGetHeight(BalanceBinarySearchTree *pBstree, int *pHei
     {
         return NULL_PTR;
     }
-
+    #if 0
+    /* 判断是否为空树 */
+    if (pBstree->size == 0)
+    {
+        return 0;
+    }
+    *pHeight = pBstree->root->height;
+    return pBstree->root->height;
+    #else
     /* 判断是否为空树 */
     if (pBstree->size == 0)
     {
@@ -659,6 +667,7 @@ int balanceBinarySearchTreeGetHeight(BalanceBinarySearchTree *pBstree, int *pHei
 
     /* 释放队列的空间 */
     doubleLinkListQueueDestroy(pQueue);
+    #endif
     return ret;
 }
 
