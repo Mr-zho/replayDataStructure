@@ -170,11 +170,17 @@ static int tmpMax(int val1, int val2)
 /* 更新结点的高度. */
 static int AVLTreeNodeUpdateHeight(AVLTreeNode *node)
 {
+    int ret = 0;
     /* 左子树的高度 */
     int leftHeight = node->left == NULL ? 0 : node->left->height;
     /* 右子树的高度 */
     int rightHeight = node->right == NULL ? 0 : node->right->height;
+#if 1
+    node->height = 1 + tmpMax(leftHeight, rightHeight);
+#else
     return 1 + tmpMax(leftHeight, rightHeight);
+#endif
+    return ret;
 }
 
 /* 判断二叉搜索树度为2 */
