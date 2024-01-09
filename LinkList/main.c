@@ -2,7 +2,7 @@
 #include "LinkList.h"
 #include <string.h>
 
-#define BUFFER_SIZE    3
+#define BUFFER_SIZE    6
 
 
 typedef struct stuInfo
@@ -22,8 +22,16 @@ int printStruct(void *arg)
 int printBasicData(void *arg)
 {
     int data = *(int *)arg;
-    printf("data:%d\n", data);
+    printf("data:%d\t", data);
 }
+
+int compareBasicFunc(void *arg1, void *arg2)
+{
+    int data1 = *(int *)arg1;
+    int data2 = *(int *)arg2;
+    return data1 - data2;
+}
+
 int main()
 {
 #if 0
@@ -44,11 +52,17 @@ int main()
     LinkListInit(&list);
 
 #if 1
-    int buffer[BUFFER_SIZE] = {1, 2, 3};
+    int buffer[BUFFER_SIZE] = {1, 2, 3, 4, 5, 6};
     /* 插入数据 */
     for (int idx = 0; idx < BUFFER_SIZE; idx++)
     {
         LinkListHeadInsert(list, (void *)&buffer[idx]);
+    }
+
+    /* 插入数据 */
+    for (int idx = 0; idx < BUFFER_SIZE; idx++)
+    {
+        LinkListTailInsert(list, (void *)&buffer[idx]);
     }
     
     /* 获取链表的长度 */
@@ -57,6 +71,38 @@ int main()
     printf("size:%d\n", size);
 
     LinkListForeach(list, printBasicData);
+    printf("\n");
+
+    int insertNum = 777;
+    LinkListAppointPosInsert(list, 0, &insertNum);
+    LinkListForeach(list, printBasicData);
+    printf("\n");
+
+
+    LinkListDelAppointPos(list, 0);
+    LinkListForeach(list, printBasicData);
+    printf("\n");
+
+    int delNum = 1;
+    LinkListDelAppointData(list, &delNum, compareBasicFunc);
+
+    LinkListForeach(list, printBasicData);
+    printf("\n");
+
+    delNum = 6;
+    LinkListDelAppointData(list, &delNum, compareBasicFunc);
+    LinkListForeach(list, printBasicData);
+    printf("\n");
+
+    printf("===================\n");
+    LinkListHeadDel(list);
+    LinkListForeach(list, printBasicData);
+    printf("\n");
+
+    printf("===================\n");
+    LinkListTailDel(list);
+    LinkListForeach(list, printBasicData);
+    printf("\n");
 #else
     stuInfo stu1, stu2, stu3;
     memset(&stu1, 0, sizeof(stu1));
