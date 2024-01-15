@@ -142,6 +142,9 @@ int main()
         dynamicArrayGetAppointPosVal(&array, idx, (void *)&val);
         printf("val:%d\n", *val);
     }
+
+    /* 销毁 */
+    dynamicArrayDestroy(&array);
 #elif 0
     int idx = 0;
     for (idx; idx < DEFAULT_NUM; idx++)

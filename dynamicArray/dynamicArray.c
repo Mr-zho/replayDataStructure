@@ -215,7 +215,8 @@ int dynamicArrayDeleteAppointPosData(dynamicArray *pArray, int pos)
     }   
 
     /* 数据前移 */
-    for (int idx = pos; idx < pArray->len; idx++)
+    /* 删除指定位置的时候, 遍历最后的位置是len - 1. */
+    for (int idx = pos; idx < (pArray->len - 1); idx++)
     {
         pArray->data[idx] = pArray->data[idx + 1];
     }
