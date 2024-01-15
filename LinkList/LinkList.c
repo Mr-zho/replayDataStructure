@@ -293,6 +293,13 @@ int LinkListDestroy(LinkList * pList)
         pList->head = NULL;
         pList->tail = NULL;
     }
+
+    /* 释放链表 */
+    if (pList != NULL)
+    {
+        free(pList);
+        pList = NULL;
+    }
     return ret;
 }
 

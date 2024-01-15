@@ -103,6 +103,9 @@ int main()
     LinkListTailDel(list);
     LinkListForeach(list, printBasicData);
     printf("\n");
+
+    /* 销毁链表 */
+    LinkListDestroy(list);
 #else
     stuInfo stu1, stu2, stu3;
     memset(&stu1, 0, sizeof(stu1));
