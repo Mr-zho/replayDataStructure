@@ -294,7 +294,6 @@ int DoubleLinkListDelAppointData(DoubleLinkList * pList, ELEMENTTYPE val, int (*
     while (DoubleLinkListAccordAppointValGetPos(pList, val, &pos, compareFunc) != NOT_FIND)
     {
         /* 根据指定的元素得到在链表中所在的位置 */
-        DoubleLinkListAccordAppointValGetPos(pList, val, &pos, compareFunc);
         DoubleLinkListDelAppointPos(pList, pos);
     }
     return ret;
@@ -407,4 +406,34 @@ int DoubleLinkListReverseForeach(DoubleLinkList * pList, int (*printFunc)(ELEMEN
     }
 #endif
     return ret;
+}
+
+/* 获取链表 头位置值 */
+int DoubleLinkListGetHeadVal(DoubleLinkList * pList, ELEMENTTYPE *pVal)
+{
+    #if 0
+    return DoubleLinkListGetAppointPosVal(pList, 0, pVal);
+    #else
+    int ret = 0;
+    if (pList == NULL)
+    {
+        return NULL_PTR;
+    }
+    if (pVal)
+    {
+        *pVal = pList->head->next->data;
+    }
+    return ret;
+    #endif
+}
+/* 获取链表 尾位置值 */
+int DoubleLinkListGetTailVal(DoubleLinkList * pList, ELEMENTTYPE *pVal)
+{
+    return DoubleLinkListGetAppointPosVal(pList, pList->len, pVal);
+}
+
+/* 获取链表 指定位置的值 */
+int DoubleLinkListGetAppointPosVal(DoubleLinkList * pList, int pos, ELEMENTTYPE *pVal)
+{
+    /* todo... */
 }

@@ -25,12 +25,21 @@ int printBasicData(void *arg)
     printf("data:%d\t", data);
 }
 
+int compareData(void *arg1, void *arg2)
+{
+    int data1 = *(int *)arg1;
+    int data2 = *(int *)arg2;
+
+    return data1 - data2;
+}
+
 int main()
 {
     DoubleLinkList *list = NULL;
     /* 初始化链表 */
     DoubleLinkListInit(&list);
 
+    
 #if 1
     int buffer[BUFFER_SIZE] = {1, 2, 3};
     /* 插入数据 - 头插 */
@@ -53,6 +62,7 @@ int main()
     /* 遍历 */
     DoubleLinkListForeach(list, printBasicData);
     printf("\n");
+
     printf("==================\n");
     /* 在指定位置插入元素 */
     int insertNum = 777;
@@ -64,6 +74,7 @@ int main()
     printf("\n");
 
     printf("==================\n");
+    /* 删除指定位置的元素 */
     DoubleLinkListDelAppointPos(list, 0);
     DoubleLinkListGetLength(list, &size);
     printf("size:%d\n", size);
@@ -72,6 +83,7 @@ int main()
     printf("\n");
 
     printf("==================\n");
+    /* 删除指定位置的元素 */
     DoubleLinkListDelAppointPos(list, 2);
     DoubleLinkListGetLength(list, &size);
     printf("size:%d\n", size);
@@ -96,9 +108,19 @@ int main()
     DoubleLinkListForeach(list, printBasicData);
     printf("\n");
 
+    printf("==================\n");
+    /* 删除指定的值 */
+    int delNum = 1;
+    DoubleLinkListDelAppointData(list, (void *)&delNum, compareData);
+    DoubleLinkListGetLength(list, &size);
+    printf("size:%d\n", size);
+    /* 遍历 */
+    DoubleLinkListForeach(list, printBasicData);
+    printf("\n");
+    
     /* 释放链表 */
     DoubleLinkListDestroy(list);
-#else
+#elif 0
     stuInfo stu1, stu2, stu3;
     memset(&stu1, 0, sizeof(stu1));
     memset(&stu2, 0, sizeof(stu2));
