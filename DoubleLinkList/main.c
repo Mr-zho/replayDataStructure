@@ -22,41 +22,82 @@ int printStruct(void *arg)
 int printBasicData(void *arg)
 {
     int data = *(int *)arg;
-    printf("data:%d\n", data);
+    printf("data:%d\t", data);
 }
+
 int main()
 {
-#if 0
-    /* strcpy第一个参数是传出参数 并返回值也是直线dst的地址的. */
-    char buffer[BUFFER_SIZE] = {0};
-    char *ptr = strcpy(buffer, "zhangsan");
-    printf("buffer:%s\n", buffer);
-    printf("ptr:%s\n", ptr);
-#endif
-
-#if 0
-    /* snmp */
-    /* 华润电力 */
-#endif
-
-    LinkList *list = NULL;
+    DoubleLinkList *list = NULL;
     /* 初始化链表 */
-    LinkListInit(&list);
+    DoubleLinkListInit(&list);
 
 #if 1
     int buffer[BUFFER_SIZE] = {1, 2, 3};
-    /* 插入数据 */
+    /* 插入数据 - 头插 */
     for (int idx = 0; idx < BUFFER_SIZE; idx++)
     {
-        LinkListHeadInsert(list, (void *)&buffer[idx]);
+        DoubleLinkListHeadInsert(list, (void *)&buffer[idx]);
+    }
+
+    /* 插入数据 - 尾插 */
+    for (int idx = 0; idx < BUFFER_SIZE; idx++)
+    {
+        DoubleLinkListTailInsert(list, (void *)&buffer[idx]);
     }
     
     /* 获取链表的长度 */
     int size = 0;
-    LinkListGetLength(list, &size);
+    DoubleLinkListGetLength(list, &size);
     printf("size:%d\n", size);
 
-    LinkListForeach(list, printBasicData);
+    /* 遍历 */
+    DoubleLinkListForeach(list, printBasicData);
+    printf("\n");
+    printf("==================\n");
+    /* 在指定位置插入元素 */
+    int insertNum = 777;
+    DoubleLinkListAppointPosInsert(list, 3, &insertNum);
+    DoubleLinkListGetLength(list, &size);
+    printf("size:%d\n", size);
+    /* 遍历 */
+    DoubleLinkListForeach(list, printBasicData);
+    printf("\n");
+
+    printf("==================\n");
+    DoubleLinkListDelAppointPos(list, 0);
+    DoubleLinkListGetLength(list, &size);
+    printf("size:%d\n", size);
+    /* 遍历 */
+    DoubleLinkListForeach(list, printBasicData);
+    printf("\n");
+
+    printf("==================\n");
+    DoubleLinkListDelAppointPos(list, 2);
+    DoubleLinkListGetLength(list, &size);
+    printf("size:%d\n", size);
+    /* 遍历 */
+    DoubleLinkListForeach(list, printBasicData);
+    printf("\n");
+
+    printf("==================\n");
+    DoubleLinkListTailDel(list);
+    DoubleLinkListGetLength(list, &size);
+    printf("size:%d\n", size);
+    /* 遍历 */
+    DoubleLinkListForeach(list, printBasicData);
+    printf("\n");
+
+
+    printf("==================\n");
+    DoubleLinkListHeadDel(list);
+    DoubleLinkListGetLength(list, &size);
+    printf("size:%d\n", size);
+    /* 遍历 */
+    DoubleLinkListForeach(list, printBasicData);
+    printf("\n");
+
+    /* 释放链表 */
+    DoubleLinkListDestroy(list);
 #else
     stuInfo stu1, stu2, stu3;
     memset(&stu1, 0, sizeof(stu1));
