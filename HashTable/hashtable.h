@@ -5,14 +5,16 @@
 
 #define SLOT_CAPACITY   10
 
-/* 双向链表 */
-typedef DoubleLinkNode hashNode;
+typedef struct hashNode
+{
+    int real_key;
+    int value;
+} hashNode;
 
 typedef struct hashTable
 {
     int slotNums;
-    hashNode *slotKeyId;
-    DoubleLinkList *slotValueList;
+    DoubleLinkList *slotKeyId;
 } HashTable;
 
 /* 哈希表的初始化 */
@@ -25,6 +27,6 @@ int hashTableInsert(HashTable *pHashtable, int key, int value);
 int hashTableDelAppointKey(HashTable *pHashtable, int key);
 
 /* 哈希表 根据key获取value. */
-int hashTableGetAppointKeyValue(HashTable *pHashtable, int key);
+int hashTableGetAppointKeyValue(HashTable *pHashtable, int key, int *mapValue);
 
 #endif //__HASH_TABLE_H_

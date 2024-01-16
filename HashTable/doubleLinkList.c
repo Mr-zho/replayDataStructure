@@ -12,16 +12,23 @@ static int DoubleLinkListAccordAppointValGetPos(DoubleLinkList * pList, ELEMENTT
 static DoubleLinkNode * createDoubleLinkNode(ELEMENTTYPE val);
 
 /* 链表初始化 */
-int DoubleLinkListInit(DoubleLinkList **pList)
+int DoubleLinkListInit(DoubleLinkList *list)
 {
+    if (list == NULL)
+    {
+        return NULL_PTR;
+    }
+
     int ret = 0;
-    DoubleLinkList *list = (DoubleLinkList *)malloc(sizeof(DoubleLinkList) * 1);
+#if 0
+    list = (DoubleLinkList *)malloc(sizeof(DoubleLinkList) * 1);
     if (list == NULL)
     {
         return MALLOC_ERROR;
     }
     /* 清空脏数据 */
     memset(list, 0, sizeof(DoubleLinkList) * 1);
+#endif
 
     list->head = (DoubleLinkNode *)malloc(sizeof(DoubleLinkNode) * 1);
     if (list->head == NULL)
@@ -40,8 +47,6 @@ int DoubleLinkListInit(DoubleLinkList **pList)
     /* 链表的长度为0 */
     list->len = 0;
 
-    /* 二级指针 */
-    *pList = list;
     return ret;
 }
 
@@ -438,4 +443,26 @@ int DoubleLinkListGetTailVal(DoubleLinkList * pList, ELEMENTTYPE *pVal)
 int DoubleLinkListGetAppointPosVal(DoubleLinkList * pList, int pos, ELEMENTTYPE *pVal)
 {
     /* todo... */
+
 }
+
+/* 根据结点找到对应的值 */
+DoubleLinkNode * DoubleLinkListAppointKeyValGetNode(DoubleLinkList * pList, ELEMENTTYPE val, int (*compareFunc)(ELEMENTTYPE, ELEMENTTYPE))
+{
+    int pos = 0;
+    DoubleLinkNode *travelNode = pList->head->next;
+    
+    int cmp = 0;
+    while (travelNode != NULL)
+    {
+        cmp = compareFunc(val, travelNode->data);
+        if (cmp == 0)
+        {
+            return travelNode;
+        }
+        /* 遍历 */
+        travelNode = travelNode->next;
+    }
+    return NULL;
+}
+

@@ -3,7 +3,7 @@
 #include "common.h"
 
 /* 链表初始化 */
-int DoubleLinkListInit(DoubleLinkList **pList);
+int DoubleLinkListInit(DoubleLinkList *pList);
 
 /* 链表头插 */
 int DoubleLinkListHeadInsert(DoubleLinkList * pList, ELEMENTTYPE val);
@@ -46,4 +46,7 @@ int DoubleLinkListGetTailVal(DoubleLinkList * pList, ELEMENTTYPE *pVal);
 
 /* 获取链表 指定位置的值 */
 int DoubleLinkListGetAppointPosVal(DoubleLinkList * pList, int pos, ELEMENTTYPE *pVal);
+
+/* 根据指定的Key值获取到对应的结点 */
+DoubleLinkNode * DoubleLinkListAppointKeyValGetNode(DoubleLinkList * pList, ELEMENTTYPE val, int (*compareFunc)(ELEMENTTYPE, ELEMENTTYPE));
 #endif
