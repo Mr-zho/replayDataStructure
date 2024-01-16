@@ -683,3 +683,30 @@ int binarySearchTreeDestroy(BinarySearchTree *pBstree)
     }
     return ret;
 }
+
+
+/* 判断二叉搜索树是否是完全二叉树 */
+int binarySearchTreeIsComplete(BinarySearchTree *pBSTree)
+{
+    int ret = 0;
+    
+
+    return ret;
+}
+
+
+/* 获取二叉搜索树的结点个数 */
+int binarySearchTreeGetNodeSize(BinarySearchTree *pBstree, int *pSize)
+{
+    if (pBstree == NULL)
+    {
+        return 0;
+    }
+
+    if (pSize)
+    {
+       *pSize = pBstree->size;
+    }
+    
+    return pBstree->size;
+}
