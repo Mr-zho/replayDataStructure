@@ -26,4 +26,4 @@ typedef struct DoubleLinkList
 } DoubleLinkList;
 
 
-#endif //__COMMON_H_
+#endif

@@ -174,13 +174,13 @@ int DoubleLinkListAppointPosInsert(DoubleLinkList * pList, int pos, ELEMENTTYPE 
 /* 链表头删 */
 int DoubleLinkListHeadDel(DoubleLinkList * pList)
 {
-    return DoubleLinkListDelAppointPos(pList, 1);
+    return DoubleLinkListDelAppointPos(pList, 0);
 }
 
 /* 链表尾删 */
 int DoubleLinkListTailDel(DoubleLinkList * pList)
 {
-    return DoubleLinkListDelAppointPos(pList, pList->len);
+    return DoubleLinkListDelAppointPos(pList, pList->len - 1);
 }
 
 /* 链表指定位置删 */
@@ -192,7 +192,7 @@ int DoubleLinkListDelAppointPos(DoubleLinkList * pList, int pos)
         return NULL_PTR;
     }
     
-    if (pos <= 0 || pos > pList->len)
+    if (pos < 0 || pos >= pList->len)
     {
         return INVALID_ACCESS;
     }
@@ -214,7 +214,7 @@ int DoubleLinkListDelAppointPos(DoubleLinkList * pList, int pos)
     }
     else
     {
-        while (--pos)
+        while (pos--)
         {
             /* 向后移动位置 */
             travelNode = travelNode->next;
@@ -222,7 +222,10 @@ int DoubleLinkListDelAppointPos(DoubleLinkList * pList, int pos)
         // 跳出循环找到的是哪一个结点？
         needDelNode = travelNode->next;                 // 1
         travelNode->next = needDelNode->next;           // 2
-        needDelNode->next->prev = travelNode;           // 3
+        if (needDelNode->next != NULL)
+        {
+            needDelNode->next->prev = travelNode;           // 3
+        }
     }
 
     /* 释放内存 */
@@ -247,7 +250,7 @@ static int DoubleLinkListAccordAppointValGetPos(DoubleLinkList * pList, ELEMENTT
     int pos = 0;
     DoubleLinkNode *travelNode = pList->head;
 #else
-    int pos = 1;
+    int pos = 0;
     DoubleLinkNode *travelNode = pList->head->next;
 #endif
     
@@ -288,7 +291,7 @@ int DoubleLinkListDelAppointData(DoubleLinkList * pList, ELEMENTTYPE val, int (*
 
     /* 链表的长度 */
     int size = 0;
-    while (DoubleLinkListGetLength(pList, &size) && pos != NOT_FIND)
+    while (DoubleLinkListAccordAppointValGetPos(pList, val, &pos, compareFunc) != NOT_FIND)
     {
         /* 根据指定的元素得到在链表中所在的位置 */
         DoubleLinkListAccordAppointValGetPos(pList, val, &pos, compareFunc);
@@ -331,6 +334,12 @@ int DoubleLinkListDestroy(DoubleLinkList * pList)
         /* 指针置为NULL. */
         pList->head = NULL;
         pList->tail = NULL;
+    }
+
+    if (pList != NULL)
+    {
+        free(pList);
+        pList = NULL;
     }
     return ret;
 }
@@ -399,6 +408,7 @@ int DoubleLinkListReverseForeach(DoubleLinkList * pList, int (*printFunc)(ELEMEN
 #endif
     return ret;
 }
+
 
 
 /* 获取链表 头位置值 */

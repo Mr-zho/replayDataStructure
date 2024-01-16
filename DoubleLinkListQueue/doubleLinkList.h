@@ -1,6 +1,5 @@
 #ifndef __DoubleLinkList_H_
 #define __DoubleLinkList_H_
-
 #include "common.h"
 
 /* 链表初始化 */
@@ -47,6 +46,4 @@ int DoubleLinkListGetTailVal(DoubleLinkList * pList, ELEMENTTYPE *pVal);
 
 /* 获取链表 指定位置的值 */
 int DoubleLinkListGetAppointPosVal(DoubleLinkList * pList, int pos, ELEMENTTYPE *pVal);
-
-
 #endif

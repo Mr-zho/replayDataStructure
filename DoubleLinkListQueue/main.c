@@ -10,6 +10,22 @@ int main()
 
     int buffer[BUFFER_SIZE] = {111, 222, 333, 444, 555};
 
+    for (int idx = 0; idx < 1; idx++)
+    {
+        doubleLinkListQueuePush(queue, (void *)&buffer[idx]);
+    }
+
+    int size = 0;
+    doubleLinkListQueueGetSize(queue, &size);
+    printf("size:%d\n", size);
+
+    int *topVal = NULL;
+    doubleLinkListQueueTop(queue, (void **)&topVal);
+    printf("topVal:%d\n", *topVal);
+
+#if 0
+    int buffer[BUFFER_SIZE] = {111, 222, 333, 444, 555};
+
     for (int idx = 0; idx < BUFFER_SIZE; idx++)
     {
         doubleLinkListQueuePush(queue, (void *)&buffer[idx]);
@@ -29,6 +45,6 @@ int main()
 
     /* 销毁队列 */
     doubleLinkListQueueDestroy(queue);
-
+#endif
     return 0;
 }
