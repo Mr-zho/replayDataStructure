@@ -68,6 +68,8 @@ int main()
     balanceBinarySearchTreeLevelOrderTravel(AVL);
     printf("\n");
 
+    /* 销毁 */
+    balanceBinarySearchTreeDestroy(AVL);
 #if 0
     /* 中序遍历 */
     balanceBinarySearchTreeInOrderTravel(AVL);
