@@ -203,6 +203,7 @@ int DoubleLinkListDelAppointPos(DoubleLinkList * pList, int pos)
     DoubleLinkNode * travelNOde = pList->head->next;
 #endif 
     DoubleLinkNode * needDelNode = NULL;
+
     /* 需要修改尾指针 */
     if (pos == pList->len)
     {
@@ -225,6 +226,12 @@ int DoubleLinkListDelAppointPos(DoubleLinkList * pList, int pos)
         if (needDelNode->next != NULL)
         {
             needDelNode->next->prev = travelNode;           // 3
+        }
+        else
+        {
+            /* 这种问题是只有一个结点, 把这个结点删除之后也需要改动尾指针. */
+            /* 移动尾指针 */
+            pList->tail = pList->tail->prev;
         }
     }
 
@@ -294,6 +301,7 @@ int DoubleLinkListDelAppointData(DoubleLinkList * pList, ELEMENTTYPE val, int (*
     while (DoubleLinkListAccordAppointValGetPos(pList, val, &pos, compareFunc) != NOT_FIND)
     {
         /* 根据指定的元素得到在链表中所在的位置 */
+        DoubleLinkListAccordAppointValGetPos(pList, val, &pos, compareFunc);
         DoubleLinkListDelAppointPos(pList, pos);
     }
     return ret;
@@ -407,6 +415,8 @@ int DoubleLinkListReverseForeach(DoubleLinkList * pList, int (*printFunc)(ELEMEN
 #endif
     return ret;
 }
+
+
 
 /* 获取链表 头位置值 */
 int DoubleLinkListGetHeadVal(DoubleLinkList * pList, ELEMENTTYPE *pVal)
