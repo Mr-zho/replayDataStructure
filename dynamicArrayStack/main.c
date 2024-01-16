@@ -6,6 +6,12 @@
 
 #define BUFFER_SIZE 5
 
+
+int isValid(char* s) 
+{
+    
+}
+
 int main()
 {
     dynamicArrayStack stack;

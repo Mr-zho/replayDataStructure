@@ -1,6 +1,20 @@
 #ifndef __DYNAMIC_ARRAY_H_
 #define __DYNAMIC_ARRAY_H_
-#include "common.h"
+
+#if 1
+#define ELEMENTTYPE void*
+#else
+typedef void * ELEMENTTYPE;
+#endif 
+
+
+/* 避免头文件重复包含 */
+typedef struct dynamicArray
+{
+    ELEMENTTYPE *data;  /* 数组的空间 */
+    int len;            /* 数组的大小 */
+    int capacity;       /* 数组的容量 */
+} dynamicArray;
 
 /* API: application program interface. */
 /* 动态数组的初始化 */
