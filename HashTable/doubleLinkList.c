@@ -298,7 +298,6 @@ int DoubleLinkListDelAppointData(DoubleLinkList * pList, ELEMENTTYPE val, int (*
     while (DoubleLinkListAccordAppointValGetPos(pList, val, &pos, compareFunc) != NOT_FIND)
     {
         /* 根据指定的元素得到在链表中所在的位置 */
-        DoubleLinkListAccordAppointValGetPos(pList, val, &pos, compareFunc);
         DoubleLinkListDelAppointPos(pList, pos);
     }
     return ret;

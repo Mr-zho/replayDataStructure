@@ -8,12 +8,18 @@
 #define DEFAULT_SLOT_NUMS   10
 
 /* 函数前置声明 */
-/* 比较器 */
-static int compareFunc(void *val1, void *val2);
+static int calHashValue(HashTable *pHashtable, HASH_KEYTYPE key, int *slotKeyId);
+static hashNode * createHashNode(HASH_KEYTYPE key, HASH_VALUETYPE value);
 
 /* 哈希表的初始化 */
-int hashTableInit(HashTable** pHashtable)
+int hashTableInit(HashTable** pHashtable, int slotNums, int (*compareFunc)(ELEMENTTYPE, ELEMENTTYPE))
 {
+    /* 判空 */
+    if (pHashtable == NULL)
+    {
+        return -1;
+    }
+
     int ret = 0;
 
     HashTable * hash = (HashTable *)malloc(sizeof(HashTable) * 1);
@@ -24,9 +30,14 @@ int hashTableInit(HashTable** pHashtable)
     }
     /* 清除脏数据 */
     memset(hash, 0, sizeof(HashTable) * 1);
-    hash->slotNums = DEFAULT_SLOT_NUMS;
 
-#if 1
+    /* 判断槽位号的合法性 */
+    if (slotNums < 0)
+    {
+        slotNums = DEFAULT_SLOT_NUMS;
+    }
+    hash->slotNums = slotNums;
+
     hash->slotKeyId = (DoubleLinkList *)malloc(sizeof(DoubleLinkList) * (hash->slotNums));
     if (hash->slotKeyId == NULL)
     {
@@ -35,25 +46,24 @@ int hashTableInit(HashTable** pHashtable)
     }
     /* 清除脏数据 */
     memset(hash->slotKeyId, 0, sizeof(DoubleLinkList) * (hash->slotNums));
-#endif
 
-    DoubleLinkListInit(&(hash->slotKeyId[0]));
-
-    /* 初始化 */
+    /* 初始化 : 每一个槽位号内部维护一个链表. */
     for (int idx = 0; idx < hash->slotNums; idx++)
     {
         /* 为哈希表的value初始化。哈希表的value是链表的虚拟头结点 */
         DoubleLinkListInit(&(hash->slotKeyId[idx]));
     }
 
+    /* 自定义比较函数 钩子🪝函数 */
+    hash->compareFunc = compareFunc;
+    
     /* 指针解引用 */
     *pHashtable = hash;
     return ret;
 }
 
-
-/* 计算外部传过来的key 转化为哈希表内部维护的slotKeyId. */
-static int calHashValue(HashTable *pHashtable, int key, int *slotKeyId)
+/* 计算外部传过来的key 转化为哈希表内部维护的slotKeyId. slotKeyIds是数组(动态数组)索引 */
+static int calHashValue(HashTable *pHashtable, HASH_KEYTYPE key, int *slotKeyId)
 {
     int ret = 0;
     if (slotKeyId)
@@ -64,7 +74,7 @@ static int calHashValue(HashTable *pHashtable, int key, int *slotKeyId)
 }
  
 /* 新建结点 */
-static hashNode * createHashNode(int key, int value)
+static hashNode * createHashNode(HASH_KEYTYPE key, HASH_VALUETYPE value)
 {
     /* 封装结点 */
     hashNode * newNode = (hashNode *)malloc(sizeof(hashNode) * 1);
@@ -82,10 +92,15 @@ static hashNode * createHashNode(int key, int value)
     return newNode;
 }
 
-
 /* 哈希表 插入<key, value> */
-int hashTableInsert(HashTable *pHashtable, int key, int value)
+int hashTableInsert(HashTable *pHashtable, HASH_KEYTYPE key, HASH_VALUETYPE value)
 {
+    /* 判空 */
+    if (pHashtable == NULL)
+    {
+        return -1;
+    }
+
     int ret = 0;
 
     /* 将外部传过来的key 转化为我哈希表对应的slotId */
@@ -107,42 +122,43 @@ int hashTableInsert(HashTable *pHashtable, int key, int value)
 }
 
 /* 哈希表 删除指定key. */
-int hashTableDelAppointKey(HashTable *pHashtable, int key)
+int hashTableDelAppointKey(HashTable *pHashtable, HASH_KEYTYPE key)
 {
+    /* 判空 */
+    if (pHashtable == NULL)
+    {
+        return -1;
+    }
+
     int ret = 0;
     /* 将外部传过来的key 转化为我哈希表对应的slotId */
     int KeyId = 0;
     calHashValue(pHashtable, key, &KeyId);
 
+    hashNode tmpNode;
+    memset(&tmpNode, 0, sizeof(hashNode));
+    tmpNode.real_key = key;
 
-
-int DoubleLinkListDelAppointData(DoubleLinkList * pList, ELEMENTTYPE val, int (*compareFunc)(ELEMENTTYPE, ELEMENTTYPE));
-
+    DoubleLinkListDelAppointData(&(pHashtable->slotKeyId[KeyId]), &tmpNode, pHashtable->compareFunc);
     return ret;
 }
 
-
-/* 自定义比较器 */
-int compareFunc(void *val1, void *val2)
-{
-    hashNode *key1 = (hashNode *)val1;
-    hashNode *key2 = (hashNode *)val2;
-
-    return key1->real_key - key2->real_key;
-}
-
 /* 哈希表 根据key获取value. */
-int hashTableGetAppointKeyValue(HashTable *pHashtable, int key, int *mapValue)
+int hashTableGetAppointKeyValue(HashTable *pHashtable, HASH_KEYTYPE key, HASH_VALUETYPE *mapValue)
 {
     int ret = 0;
-
+    /* 判空 */
+    if (pHashtable == NULL)
+    {
+        return -1;
+    }
     /* 将外部传过来的key 转化为我哈希表对应的slotId */
     int KeyId = 0;
     calHashValue(pHashtable, key, &KeyId);
 
     hashNode tmpNode;
     tmpNode.real_key = key;
-    DoubleLinkNode * resNode = DoubleLinkListAppointKeyValGetNode(&(pHashtable->slotKeyId[KeyId]), &tmpNode,  compareFunc);
+    DoubleLinkNode * resNode = DoubleLinkListAppointKeyValGetNode(&(pHashtable->slotKeyId[KeyId]), &tmpNode,  pHashtable->compareFunc);
     if (resNode == NULL)
     {
         return -1;
@@ -155,4 +171,35 @@ int hashTableGetAppointKeyValue(HashTable *pHashtable, int key, int *mapValue)
     }
 
     return ret;
+}
+
+
+/* 哈希表元素大小 */
+int hashTableGetSize(HashTable *pHashtable)
+{
+    if (pHashtable == NULL)
+    {
+        return 0;
+    }
+
+    int size = 0;
+    for (int idx = 0; idx < pHashtable->slotNums; idx++)
+    {
+        size += pHashtable->slotKeyId[idx].len;
+    }
+    
+    /* 哈希表的元素个数. */
+    return size;
+}
+
+/* 哈希表的销毁 */
+int hashTableDestroy(HashTable *pHashtable)
+{
+    /* 自己分配的内存自己释放 */
+    if (pHashtable == NULL)
+    {
+        return 0;
+    }
+
+
 }
