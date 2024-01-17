@@ -32,12 +32,13 @@ int hashTableInit(HashTable** pHashtable, int slotNums, int (*compareFunc)(ELEME
     memset(hash, 0, sizeof(HashTable) * 1);
 
     /* 判断槽位号的合法性 */
-    if (slotNums < 0)
+    if (slotNums <= 0)
     {
         slotNums = DEFAULT_SLOT_NUMS;
     }
     hash->slotNums = slotNums;
 
+    /* 动态数组分配空间 */
     hash->slotKeyId = (DoubleLinkList *)malloc(sizeof(DoubleLinkList) * (hash->slotNums));
     if (hash->slotKeyId == NULL)
     {
@@ -115,6 +116,7 @@ int hashTableInsert(HashTable *pHashtable, HASH_KEYTYPE key, HASH_VALUETYPE valu
         return MALLOC_ERROR;
     }
     
+    /* todo: 去重... */
     /* 将哈希结点插入到链表中. */
     DoubleLinkListTailInsert(&(pHashtable->slotKeyId[KeyId]), newNode);
 
@@ -201,5 +203,28 @@ int hashTableDestroy(HashTable *pHashtable)
         return 0;
     }
 
+    /* 谁开辟空间, 谁释放空间. */
+
+    /* todo...  1. 先释放哈希表的结点 */
+    
+    /* 2. 释放哈希表每个槽维的链表 */
+    for (int idx = 0; idx < pHashtable->slotNums; idx++)
+    {
+        DoubleLinkListDestroy(&(pHashtable->slotKeyId[idx]));
+    }
+
+    /* 3. 释放槽位 */
+    if (pHashtable->slotKeyId != NULL)
+    {
+        free(pHashtable->slotKeyId);
+        pHashtable->slotKeyId = NULL;
+    }
+
+    /* 4. 释放哈希表 */
+    if (pHashtable != NULL)
+    {
+        free(pHashtable);
+        pHashtable = NULL;
+    }
 
 }
