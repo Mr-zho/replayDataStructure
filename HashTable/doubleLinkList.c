@@ -12,16 +12,18 @@ static int DoubleLinkListAccordAppointValGetPos(DoubleLinkList * pList, ELEMENTT
 static DoubleLinkNode * createDoubleLinkNode(ELEMENTTYPE val);
 
 /* 链表初始化 */
-int DoubleLinkListInit(DoubleLinkList *list)
+int DoubleLinkListInit(DoubleLinkList **pList)
 {
+    #if 0
     if (list == NULL)
     {
         return NULL_PTR;
     }
+    #endif
 
     int ret = 0;
-#if 0
-    list = (DoubleLinkList *)malloc(sizeof(DoubleLinkList) * 1);
+#if 1
+    DoubleLinkList *list = (DoubleLinkList *)malloc(sizeof(DoubleLinkList) * 1);
     if (list == NULL)
     {
         return MALLOC_ERROR;
@@ -47,6 +49,8 @@ int DoubleLinkListInit(DoubleLinkList *list)
     /* 链表的长度为0 */
     list->len = 0;
 
+    /* 二级指针 - 解引用 */
+    *pList = list;
     return ret;
 }
 

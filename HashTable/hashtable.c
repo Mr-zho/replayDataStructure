@@ -39,14 +39,14 @@ int hashTableInit(HashTable** pHashtable, int slotNums, int (*compareFunc)(ELEME
     hash->slotNums = slotNums;
 
     /* 动态数组分配空间 */
-    hash->slotKeyId = (DoubleLinkList *)malloc(sizeof(DoubleLinkList) * (hash->slotNums));
+    hash->slotKeyId = (DoubleLinkList **)malloc(sizeof(DoubleLinkList *) * (hash->slotNums));
     if (hash->slotKeyId == NULL)
     {
         perror("malloc error");
         return MALLOC_ERROR;
     }
     /* 清除脏数据 */
-    memset(hash->slotKeyId, 0, sizeof(DoubleLinkList) * (hash->slotNums));
+    memset(hash->slotKeyId, 0, sizeof(DoubleLinkList*) * (hash->slotNums));
 
     /* 初始化 : 每一个槽位号内部维护一个链表. */
     for (int idx = 0; idx < hash->slotNums; idx++)
@@ -118,7 +118,7 @@ int hashTableInsert(HashTable *pHashtable, HASH_KEYTYPE key, HASH_VALUETYPE valu
     
     /* todo: 去重... */
     /* 将哈希结点插入到链表中. */
-    DoubleLinkListTailInsert(&(pHashtable->slotKeyId[KeyId]), newNode);
+    DoubleLinkListTailInsert(pHashtable->slotKeyId[KeyId], newNode);
 
     return ret;
 }
@@ -141,7 +141,7 @@ int hashTableDelAppointKey(HashTable *pHashtable, HASH_KEYTYPE key)
     memset(&tmpNode, 0, sizeof(hashNode));
     tmpNode.real_key = key;
 
-    DoubleLinkListDelAppointData(&(pHashtable->slotKeyId[KeyId]), &tmpNode, pHashtable->compareFunc);
+    DoubleLinkListDelAppointData(pHashtable->slotKeyId[KeyId], &tmpNode, pHashtable->compareFunc);
     return ret;
 }
 
@@ -160,7 +160,7 @@ int hashTableGetAppointKeyValue(HashTable *pHashtable, HASH_KEYTYPE key, HASH_VA
 
     hashNode tmpNode;
     tmpNode.real_key = key;
-    DoubleLinkNode * resNode = DoubleLinkListAppointKeyValGetNode(&(pHashtable->slotKeyId[KeyId]), &tmpNode,  pHashtable->compareFunc);
+    DoubleLinkNode * resNode = DoubleLinkListAppointKeyValGetNode(pHashtable->slotKeyId[KeyId], &tmpNode,  pHashtable->compareFunc);
     if (resNode == NULL)
     {
         return -1;
@@ -187,7 +187,7 @@ int hashTableGetSize(HashTable *pHashtable)
     int size = 0;
     for (int idx = 0; idx < pHashtable->slotNums; idx++)
     {
-        size += pHashtable->slotKeyId[idx].len;
+        size += pHashtable->slotKeyId[idx]->len;
     }
     
     /* 哈希表的元素个数. */
@@ -206,11 +206,23 @@ int hashTableDestroy(HashTable *pHashtable)
     /* 谁开辟空间, 谁释放空间. */
 
     /* todo...  1. 先释放哈希表的结点 */
-    
+    for (int idx = 0; idx < pHashtable->slotNums; idx++)
+    {
+        DoubleLinkNode * travelLinkNode = pHashtable->slotKeyId[idx]->head->next;
+        while (travelLinkNode != NULL)
+        {
+            /* 释放哈希结点 */
+            free(travelLinkNode->data);
+            travelLinkNode->data = NULL;
+
+            /* 指针位置移动 */
+            travelLinkNode = travelLinkNode->next;
+        }
+    }
     /* 2. 释放哈希表每个槽维的链表 */
     for (int idx = 0; idx < pHashtable->slotNums; idx++)
     {
-        DoubleLinkListDestroy(&(pHashtable->slotKeyId[idx]));
+        DoubleLinkListDestroy(pHashtable->slotKeyId[idx]);
     }
 
     /* 3. 释放槽位 */

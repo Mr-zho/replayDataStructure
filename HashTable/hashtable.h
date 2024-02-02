@@ -19,8 +19,8 @@ typedef struct hashTable
     /* 哈希表的槽位数 */
     int slotNums;
 
-    /* 哈希表的槽位号 (分配一块连续的存储空间) */
-    DoubleLinkList *slotKeyId;
+    /* 哈希表的槽位号 (分配一块连续的存储空间) 指针数组(链表头结点) */
+    DoubleLinkList ** slotKeyId;
     
     /* 自定义比较器 用于适配链表数据结构 */
     int (*compareFunc)(ELEMENTTYPE, ELEMENTTYPE);

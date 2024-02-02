@@ -3,7 +3,7 @@
 #include "common.h"
 
 /* 链表初始化 */
-int DoubleLinkListInit(DoubleLinkList *pList);
+int DoubleLinkListInit(DoubleLinkList **pList);
 
 /* 链表头插 */
 int DoubleLinkListHeadInsert(DoubleLinkList * pList, ELEMENTTYPE val);
