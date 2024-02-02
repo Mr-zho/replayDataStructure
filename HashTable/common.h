@@ -3,6 +3,16 @@
 
 #define ELEMENTTYPE void*
 
+/* 状态码 */
+enum STATUS_CODE
+{
+    NOT_FIND = -1,
+    ON_SUCCESS,
+    NULL_PTR,
+    MALLOC_ERROR,
+    INVALID_ACCESS,
+};
+
 /* 链表结点取别名 */
 typedef struct DoubleLinkNode
 {
@@ -24,16 +34,6 @@ typedef struct DoubleLinkList
     /* 链表的长度 */
     int len;
 } DoubleLinkList;
-
-/* 状态码 */
-enum STATUS_CODE
-{
-    NOT_FIND = -1,
-    ON_SUCCESS,
-    NULL_PTR,
-    MALLOC_ERROR,
-    INVALID_ACCESS,
-};
 
 
 #endif

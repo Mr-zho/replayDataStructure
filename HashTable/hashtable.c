@@ -141,26 +141,39 @@ int hashTableDelAppointKey(HashTable *pHashtable, HASH_KEYTYPE key)
     memset(&tmpNode, 0, sizeof(hashNode));
     tmpNode.real_key = key;
 
+#if 1
+    /* todo... 删除哈希结点 */
+    DoubleLinkNode * resNode = DoubleLinkListAppointKeyValGetNode((pHashtable->slotKeyId[KeyId]), &tmpNode,  pHashtable->compareFunc);
+    if (resNode == NULL)
+    {
+        return -1;
+    }
+    
+    /* 备份哈希结点 */
+    hashNode * delHashNode = resNode->data;
+#endif
     DoubleLinkListDelAppointData(pHashtable->slotKeyId[KeyId], &tmpNode, pHashtable->compareFunc);
+
+    if (delHashNode)
+    {
+        free(delHashNode);
+        delHashNode = NULL;
+    }
     return ret;
 }
 
 /* 哈希表 根据key获取value. */
-int hashTableGetAppointKeyValue(HashTable *pHashtable, HASH_KEYTYPE key, HASH_VALUETYPE *mapValue)
+int hashTableGetAppointKeyValue(HashTable *pHashtable, int key, int *mapValue)
 {
     int ret = 0;
-    /* 判空 */
-    if (pHashtable == NULL)
-    {
-        return -1;
-    }
+
     /* 将外部传过来的key 转化为我哈希表对应的slotId */
     int KeyId = 0;
     calHashValue(pHashtable, key, &KeyId);
 
     hashNode tmpNode;
     tmpNode.real_key = key;
-    DoubleLinkNode * resNode = DoubleLinkListAppointKeyValGetNode(pHashtable->slotKeyId[KeyId], &tmpNode,  pHashtable->compareFunc);
+    DoubleLinkNode * resNode = DoubleLinkListAppointKeyValGetNode((pHashtable->slotKeyId[KeyId]), &tmpNode,  pHashtable->compareFunc);
     if (resNode == NULL)
     {
         return -1;
@@ -174,7 +187,6 @@ int hashTableGetAppointKeyValue(HashTable *pHashtable, HASH_KEYTYPE key, HASH_VA
 
     return ret;
 }
-
 
 /* 哈希表元素大小 */
 int hashTableGetSize(HashTable *pHashtable)
@@ -205,7 +217,7 @@ int hashTableDestroy(HashTable *pHashtable)
 
     /* 谁开辟空间, 谁释放空间. */
 
-    /* todo...  1. 先释放哈希表的结点 */
+    /* 1. 先释放哈希表的结点 */
     for (int idx = 0; idx < pHashtable->slotNums; idx++)
     {
         DoubleLinkNode * travelLinkNode = pHashtable->slotKeyId[idx]->head->next;

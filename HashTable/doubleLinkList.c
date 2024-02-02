@@ -14,15 +14,7 @@ static DoubleLinkNode * createDoubleLinkNode(ELEMENTTYPE val);
 /* 链表初始化 */
 int DoubleLinkListInit(DoubleLinkList **pList)
 {
-    #if 0
-    if (list == NULL)
-    {
-        return NULL_PTR;
-    }
-    #endif
-
     int ret = 0;
-#if 1
     DoubleLinkList *list = (DoubleLinkList *)malloc(sizeof(DoubleLinkList) * 1);
     if (list == NULL)
     {
@@ -30,7 +22,6 @@ int DoubleLinkListInit(DoubleLinkList **pList)
     }
     /* 清空脏数据 */
     memset(list, 0, sizeof(DoubleLinkList) * 1);
-#endif
 
     list->head = (DoubleLinkNode *)malloc(sizeof(DoubleLinkNode) * 1);
     if (list->head == NULL)
@@ -49,7 +40,7 @@ int DoubleLinkListInit(DoubleLinkList **pList)
     /* 链表的长度为0 */
     list->len = 0;
 
-    /* 二级指针 - 解引用 */
+    /* 二级指针 */
     *pList = list;
     return ret;
 }
@@ -302,6 +293,7 @@ int DoubleLinkListDelAppointData(DoubleLinkList * pList, ELEMENTTYPE val, int (*
     while (DoubleLinkListAccordAppointValGetPos(pList, val, &pos, compareFunc) != NOT_FIND)
     {
         /* 根据指定的元素得到在链表中所在的位置 */
+        DoubleLinkListAccordAppointValGetPos(pList, val, &pos, compareFunc);
         DoubleLinkListDelAppointPos(pList, pos);
     }
     return ret;
@@ -446,7 +438,6 @@ int DoubleLinkListGetTailVal(DoubleLinkList * pList, ELEMENTTYPE *pVal)
 int DoubleLinkListGetAppointPosVal(DoubleLinkList * pList, int pos, ELEMENTTYPE *pVal)
 {
     /* todo... */
-
 }
 
 /* 根据结点找到对应的值 */
@@ -454,7 +445,7 @@ DoubleLinkNode * DoubleLinkListAppointKeyValGetNode(DoubleLinkList * pList, ELEM
 {
     int pos = 0;
     DoubleLinkNode *travelNode = pList->head->next;
-    
+
     int cmp = 0;
     while (travelNode != NULL)
     {
@@ -468,4 +459,3 @@ DoubleLinkNode * DoubleLinkListAppointKeyValGetNode(DoubleLinkList * pList, ELEM
     }
     return NULL;
 }
-

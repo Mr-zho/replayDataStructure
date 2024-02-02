@@ -71,4 +71,7 @@ int main()
     {
         printf("value:%d\n", value);
     }
+
+    /* 释放 */
+    hashTableDestroy(hash);
 }
