@@ -971,6 +971,12 @@ int balanceBinarySearchTreeDestroy(BalanceBinarySearchTree *pBstree)
         return NULL_PTR;
     }
 
+    /* 空树 */
+    if (pBstree->root == NULL)
+    {
+        return ON_SUCCESS;
+    }
+
     int ret;
     DoubleLinkListQueue *pQueue = NULL;
     doubleLinkListQueueInit(&pQueue);
