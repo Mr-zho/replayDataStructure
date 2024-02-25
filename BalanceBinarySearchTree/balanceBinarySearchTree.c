@@ -910,6 +910,9 @@ static int balanceBinarySearchTreeDeleteNode(BalanceBinarySearchTree *pBstree, A
             }
             
             #endif
+            
+            /* 根结点需要置为NULL. */
+            pBstree->root == NULL;
         }
         else
         {
