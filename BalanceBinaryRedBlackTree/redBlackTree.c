@@ -123,6 +123,8 @@ static int insertNodeAfter(RedBlackTree *pBstree, RedBlackTreeNode *node)
 
             /* 把祖父结点当作是新添加的结点 */
             insertNodeAfter(pBstree, grandNode);
+
+            return ON_SUCCESS;
         }
 
         /* 程序执行到这里: 叔父结点一定不是红色 todo... */
@@ -133,11 +135,22 @@ static int insertNodeAfter(RedBlackTree *pBstree, RedBlackTreeNode *node)
             if (RedBlackTreeNodeIsLeft(node))
             {
                 /* LL */
+                stainBlackColor(parent);
+                stainRedColor(grandNode);
 
+                /* 右旋转 */
+                RedBlackTreeNodeRotateRight(pBstree, grandNode);
             }
             else if (RedBlackTreeNodeIsRight(node))
             {
                 /* LR */
+                stainBlackColor(node);
+                stainRedColor(grandNode);
+
+                /* parent左旋转 */
+                RedBlackTreeNodeRotateLeft(pBstree, parent);
+                /* grand右旋转 */
+                RedBlackTreeNodeRotateRight(pBstree, grandNode);
             }
         }
         else if (RedBlackTreeNodeIsRight(parent))   /* R? */
@@ -145,11 +158,22 @@ static int insertNodeAfter(RedBlackTree *pBstree, RedBlackTreeNode *node)
             if (RedBlackTreeNodeIsLeft(node))
             {
                 /* RL */
+                stainBlackColor(node);
+                stainRedColor(grandNode);
 
+                /* parent右旋转 */
+                RedBlackTreeNodeRotateRight(pBstree, parent);
+                /* grand左旋转 */
+                RedBlackTreeNodeRotateLeft(pBstree, grandNode);
             }
             else if (RedBlackTreeNodeIsRight(node))
             {
                 /* RR */
+                stainBlackColor(parent);
+                stainRedColor(grandNode);
+
+                /* 右旋转 */
+                RedBlackTreeNodeRotateLeft(pBstree, grandNode);
             }
         }
     }
