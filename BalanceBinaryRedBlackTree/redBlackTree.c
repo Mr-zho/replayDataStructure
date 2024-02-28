@@ -238,10 +238,6 @@ static int RedBlackTreeNodeRotate(RedBlackTree *pBstree, RedBlackTreeNode *grand
         child->parent = grand;   //6
     }
 
-    /* 更新高度 */
-    RedBlackTreeNodeUpdateHeight(grand);
-    RedBlackTreeNodeUpdateHeight(parent);
-
     return ret;
 }
 
