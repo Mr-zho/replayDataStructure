@@ -30,6 +30,8 @@ static int RedBlackTreeNodeIsLeaf(RedBlackTreeNode *node);
 static int preOrderTravel(RedBlackTree *pBstree, RedBlackTreeNode *node);
 /* 中序遍历 */
 static int inOrderTravel(RedBlackTree *pBstree, RedBlackTreeNode *node);
+/* 添加结点之后要做的事情 */
+static int insertNodeAfter(RedBlackTree *pBstree, RedBlackTreeNode *node);
 /* 后序遍历 */
 static int postOrderTravel(RedBlackTree *pBstree, RedBlackTreeNode *node);
 /* 获取当前结点的前驱结点 */
@@ -46,9 +48,20 @@ static int RedBlackTreeNodeIsRight(RedBlackTreeNode *node);
 static int RedBlackTreeNodeRotateLeft(RedBlackTree *pBstree, RedBlackTreeNode *grand);
 /* 右旋 */
 static int RedBlackTreeNodeRotateRight(RedBlackTree *pBstree, RedBlackTreeNode *grand);
-
 /* 染色 */
 static RedBlackTreeNode * stainColor(RedBlackTreeNode *node, bool color);
+/* 当前结点染成红色 */
+static RedBlackTreeNode * stainRedColor(RedBlackTreeNode *node);
+/* 查看当前结点的颜色 */
+static bool RedBlackTreeNodeColorOf(RedBlackTreeNode *node);
+/* 当前结点染成黑色 */
+static RedBlackTreeNode * stainBlackColor(RedBlackTreeNode *node);
+/* 当前结点是红色结点 */
+static bool RedBlackTreeNodeIsRedColor(RedBlackTreeNode *node);
+/* 当前结点是黑色结点 */
+static bool RedBlackTreeNodeIsBlackColor(RedBlackTreeNode *node);
+/* 返回兄弟结点 */
+static RedBlackTreeNode * RedBlackTreeNodeGetSiblingNode(RedBlackTreeNode *node);
 
 /* 二叉搜索树的初始化 */
 int RedBlackTreeInit(RedBlackTree **pBstree, int (*compareFunc)(ELEMENTTYPE val1, ELEMENTTYPE val2), int (*printFunc)(ELEMENTTYPE val))
@@ -71,36 +84,15 @@ int RedBlackTreeInit(RedBlackTree **pBstree, int (*compareFunc)(ELEMENTTYPE val1
         /* 钩子函数包装器 自定义打印. */
         bstree->printFunc = printFunc;
     }
-
-    #if 0
-    /* 分配根结点 */
-    bstree->root = (RedBlackTreeNode *)malloc(sizeof(RedBlackTreeNode) * 1);
-    if (bstree->root == NULL)
-    {
-        return MALLOC_ERROR;
-    }
-    /* 清除脏数据 */
-    memset(bstree->root, 0, sizeof(RedBlackTreeNode) * 1);
-    /* 初始化根结点 */
-    {
-        bstree->root->data = 0;
-        bstree->root->left = NULL;
-        bstree->root->right = NULL;
-        bstree->root->parent = NULL;
-    }
-    #else
-    bstree->root = createBSTreeNewNode(0, NULL);
-    if (bstree->root == NULL)
-    {
-        return MALLOC_ERROR;
-    }
-    #endif
     
-    #if 0
-    doubleLinkListQueueInit(&(bstree->pQueue));
-    #endif
     *pBstree = bstree;
     return ret;
+}
+
+/* 添加结点之后要做的事情 */
+static int insertNodeAfter(RedBlackTree *pBstree, RedBlackTreeNode *node)
+{
+    return 0;
 }
 
 /* 判断二叉搜索树度为2 */
@@ -365,7 +357,7 @@ static RedBlackTreeNode * RedBlackTreeNodeGetSiblingNode(RedBlackTreeNode *node)
 
 static RedBlackTreeNode *createBSTreeNewNode(ELEMENTTYPE val, RedBlackTreeNode *parent)
 {
-    /* 分配根结点 */
+    /* 分配新结点 */
     RedBlackTreeNode * newBstNode = (RedBlackTreeNode *)malloc(sizeof(RedBlackTreeNode) * 1);
     if (newBstNode == NULL)
     {
@@ -376,6 +368,7 @@ static RedBlackTreeNode *createBSTreeNewNode(ELEMENTTYPE val, RedBlackTreeNode *
     /* 初始化根结点 */
     {
         newBstNode->data = 0;
+        /* 为了尽快满足红黑树的性质.  [同时保证从根结点到叶子结点黑色个数相等] */
         newBstNode->color = RED;
         newBstNode->left = NULL;
         newBstNode->right = NULL;
@@ -415,12 +408,13 @@ int RedBlackTreeInsert(RedBlackTree *pBstree, ELEMENTTYPE val)
     int ret = 0;
     
     /* 空树 */
-    if (pBstree->size == 0)
+    if (pBstree->root == NULL)
     {
         /* 更新树的结点 */
         (pBstree->size)++;
-
-        pBstree->root->data = val;
+        pBstree->root = createBSTreeNewNode(val, NULL);
+        /* 添加结点之后要做的事情 */
+        insertNodeAfter(pBstree, pBstree->root);
         return ret;
     }
 
@@ -489,6 +483,9 @@ int RedBlackTreeInsert(RedBlackTree *pBstree, ELEMENTTYPE val)
 
     /* 更新树的结点 */
     (pBstree->size)++;
+    /* 添加结点之后要做的事情 */
+    insertNodeAfter(pBstree, newBstNode);
+
     return ret;
 }
 
