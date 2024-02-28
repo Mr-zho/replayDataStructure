@@ -33,7 +33,7 @@ static int inOrderTravel(RedBlackTree *pBstree, RedBlackTreeNode *node);
 /* 添加结点之后要做的事情 */
 static int insertNodeAfter(RedBlackTree *pBstree, RedBlackTreeNode *node);
 /* 删除结点之后要做的事情 */
-static int removeNodeAfter(RedBlackTree *pBstree, RedBlackTreeNode *node);
+static int removeNodeAfter(RedBlackTree *pBstree, RedBlackTreeNode *node, RedBlackTreeNode *replaceNode);
 /* 后序遍历 */
 static int postOrderTravel(RedBlackTree *pBstree, RedBlackTreeNode *node);
 /* 获取当前结点的前驱结点 */
@@ -789,8 +789,25 @@ int RedBlackTreeGetHeight(RedBlackTree *pBstree, int *pHeight)
 
 /* 删除结点之后要做的事情 */
 /* node参数是要删除的结点 */
-static int removeNodeAfter(RedBlackTree *pBstree, RedBlackTreeNode *node)
+static int removeNodeAfter(RedBlackTree *pBstree, RedBlackTreeNode *node, RedBlackTreeNode *replaceNode)
 {
+    /* 如果删除结点是红色 */
+    if (RedBlackTreeNodeIsRedColor(node))
+    {
+        return ON_SUCCESS;
+    }
+
+    /* 用以取代node的子结点是红色 */
+    if (RedBlackTreeNodeIsRedColor(replaceNode))
+    {
+        stainBlackColor(replaceNode);
+        return ON_SUCCESS;
+    }
+
+    /* 程序执行到这边 删除的是黑色的叶子结点 */
+    /* todo... */
+
+
     return 0;
 }
 
@@ -837,7 +854,7 @@ static int RedBlackTreeDeleteNode(RedBlackTree *pBstree, RedBlackTreeNode *node)
                 free(node);
                 node = NULL;
             }
-            #endif
+            #endif 
         }
         else
         {
@@ -861,6 +878,8 @@ static int RedBlackTreeDeleteNode(RedBlackTree *pBstree, RedBlackTreeNode *node)
             }
             #endif
         }
+
+        removeNodeAfter(pBstree, delNode, child);
     }
     else
     {
@@ -876,6 +895,9 @@ static int RedBlackTreeDeleteNode(RedBlackTree *pBstree, RedBlackTreeNode *node)
                 node = NULL;
             }
             #endif
+
+            removeNodeAfter(pBstree, delNode, NULL);
+
             /* 根结点置为NULL, 否则有bug. */
             pBstree->root = NULL;
         }
@@ -899,6 +921,8 @@ static int RedBlackTreeDeleteNode(RedBlackTree *pBstree, RedBlackTreeNode *node)
                 node = NULL;
             }
             #endif
+
+            removeNodeAfter(pBstree, delNode, NULL);
         }
        
     }
