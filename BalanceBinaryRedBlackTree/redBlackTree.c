@@ -38,8 +38,17 @@ static RedBlackTreeNode * RedBlackTreeNodePreDecessor(RedBlackTreeNode *node);
 static RedBlackTreeNode * RedBlackTreeNodeSuccessor(RedBlackTreeNode *node);
 /* 二叉搜索树删除指定的结点 */
 static int RedBlackTreeDeleteNode(RedBlackTree *pBstree, RedBlackTreeNode *node);
+/* 当前结点是父结点的左子树 */
+static int RedBlackTreeNodeIsLeft(RedBlackTreeNode *node);
+/* 当前结点是父结点的右子树 */
+static int RedBlackTreeNodeIsRight(RedBlackTreeNode *node);
+/* 左旋 */
+static int RedBlackTreeNodeRotateLeft(RedBlackTree *pBstree, RedBlackTreeNode *grand);
+/* 右旋 */
+static int RedBlackTreeNodeRotateRight(RedBlackTree *pBstree, RedBlackTreeNode *grand);
 
-
+/* 染色 */
+static RedBlackTreeNode * stainColor(RedBlackTreeNode *node, bool color);
 
 /* 二叉搜索树的初始化 */
 int RedBlackTreeInit(RedBlackTree **pBstree, int (*compareFunc)(ELEMENTTYPE val1, ELEMENTTYPE val2), int (*printFunc)(ELEMENTTYPE val))
@@ -112,6 +121,142 @@ static int RedBlackTreeNodeIsLeaf(RedBlackTreeNode *node)
     return (node->left == NULL) && (node->right == NULL);
 }
 
+/* 当前结点是父结点的左子树 */
+static int RedBlackTreeNodeIsLeft(RedBlackTreeNode *node)
+{
+    return (node->parent != NULL) && (node == node->parent->left);
+}
+
+/* 当前结点是父结点的右子树 */
+static int RedBlackTreeNodeIsRight(RedBlackTreeNode *node)
+{
+    return (node->parent != NULL ) && (node == node->parent->right);
+}
+
+
+static int RedBlackTreeNodeRotate(RedBlackTree *pBstree, RedBlackTreeNode *grand, RedBlackTreeNode *parent, RedBlackTreeNode *child)
+{
+    int ret = 0;
+    /* p成为新的根结点 */
+    parent->parent = grand->parent;   // 3
+
+    if(RedBlackTreeNodeIsRight(grand))
+    {
+        grand->parent->right = parent;      // 4
+    }
+    else if (RedBlackTreeNodeIsLeft(grand))
+    {
+        grand->parent->left = parent;        // 4
+    }
+    else
+    {
+        /* 根结点 */
+        pBstree->root = parent;     // 4
+    }
+    grand->parent = parent;      // 5
+
+    if(child)
+    {
+        child->parent = grand;   //6
+    }
+
+    /* 更新高度 */
+    RedBlackTreeNodeUpdateHeight(grand);
+    RedBlackTreeNodeUpdateHeight(parent);
+
+    return ret;
+}
+
+/* 左旋 : RR */
+static int RedBlackTreeNodeRotateLeft(RedBlackTree *pBstree, RedBlackTreeNode *grand)
+{
+    int ret = 0;
+
+    RedBlackTreeNode * parent = grand->right;
+    RedBlackTreeNode * child = parent->left;
+
+    grand->right = child;        // 1
+    parent->left = grand;        // 2
+
+#if 0
+    /* p成为新的根结点 */
+    parent->parent = grand->parent;   // 3
+
+    if(RedBlackTreeNodeIsRight(grand))
+    {
+        grand->parent->right = parent;      // 4
+    }
+    else if (RedBlackTreeNodeIsLeft(grand))
+    {
+        grand->parent->left = parent;        // 4
+    }
+    else
+    {
+        /* 根结点 */
+        pBstree->root = parent;     // 4
+    }
+    grand->parent = parent;      // 5
+
+    if(child)
+    {
+        child->parent = grand;   //6
+    }
+
+    /* 更新高度 */
+    RedBlackTreeNodeUpdateHeight(grand);
+    RedBlackTreeNodeUpdateHeight(parent);
+#else
+    RedBlackTreeNodeRotate(pBstree, grand, parent, child);
+#endif
+    return ret;
+}
+
+/* 右旋 */
+static int RedBlackTreeNodeRotateRight(RedBlackTree *pBstree, RedBlackTreeNode *grand)
+{
+    int ret = 0;
+    /* */
+    RedBlackTreeNode *parent = grand->left;
+    RedBlackTreeNode *child = parent->right;
+
+    grand->left = child;                // 1
+    parent->right = grand;              // 2
+
+#if 0
+    /* p成为新的根结点 */
+    parent->parent = grand->parent;     // 3
+
+    if (RedBlackTreeNodeIsLeft(grand))
+    {
+        grand->parent->left = parent;   // 4
+    }
+    else if (RedBlackTreeNodeIsRight(grand))
+    {
+        grand->parent->right = parent;  // 4
+    }
+    else
+    {
+        /* p 成为树的根结点 */
+        pBstree->root = parent;         // 4
+    }
+    grand->parent = parent;             // 5
+
+    if (child != NULL)
+    {
+        child->parent = grand;          // 6
+    }
+
+    /* 更新高度 */
+    /* 先更新低的结点 */
+    RedBlackTreeNodeUpdateHeight(grand);
+    RedBlackTreeNodeUpdateHeight(parent);
+#else
+    RedBlackTreeNodeRotate(pBstree, grand, parent, child);
+#endif
+    return ret;
+}
+
+
 /* 获取当前结点的前驱结点 */
 /* 中序遍历到结点的前一个结点 */
 static RedBlackTreeNode * RedBlackTreeNodePreDecessor(RedBlackTreeNode *node)
@@ -159,6 +304,64 @@ static RedBlackTreeNode * RedBlackTreeNodeSuccessor(RedBlackTreeNode *node)
     return node->parent;
 }
 
+/* 对指定结点染色 */
+static RedBlackTreeNode * stainColor(RedBlackTreeNode *node, bool color)
+{
+    if (node == NULL)
+    {
+        return NULL;
+    }
+    node->color = color;
+    return node;
+}
+
+/* 当前结点染成红色 */
+static RedBlackTreeNode * stainRedColor(RedBlackTreeNode *node)
+{
+    return stainColor(node, RED);
+}
+
+/* 查看当前结点的颜色 */
+static bool RedBlackTreeNodeColorOf(RedBlackTreeNode *node)
+{
+    return (node == NULL) ? BLACK : node->color;
+}
+
+/* 当前结点染成黑色 */
+static RedBlackTreeNode * stainBlackColor(RedBlackTreeNode *node)
+{
+    return stainColor(node, BLACK);
+}
+
+/* 当前结点是红色结点 */
+static bool RedBlackTreeNodeIsRedColor(RedBlackTreeNode *node)
+{
+    return RedBlackTreeNodeColorOf(node) == RED;
+}
+
+/* 当前结点是黑色结点 */
+static bool RedBlackTreeNodeIsBlackColor(RedBlackTreeNode *node)
+{
+    return RedBlackTreeNodeColorOf(node) == BLACK;
+}
+
+/* 返回兄弟结点 */
+static RedBlackTreeNode * RedBlackTreeNodeGetSiblingNode(RedBlackTreeNode *node)
+{
+    if (RedBlackTreeNodeIsLeaf(node))
+    {
+        return node->parent->right;
+    }
+    else if (RedBlackTreeNodeIsRight(node))
+    {
+        return node->parent->left;
+    }
+    else
+    {
+        /* 根结点无父结点 */
+        return NULL;
+    }
+}
 
 static RedBlackTreeNode *createBSTreeNewNode(ELEMENTTYPE val, RedBlackTreeNode *parent)
 {
@@ -173,6 +376,7 @@ static RedBlackTreeNode *createBSTreeNewNode(ELEMENTTYPE val, RedBlackTreeNode *
     /* 初始化根结点 */
     {
         newBstNode->data = 0;
+        newBstNode->color = RED;
         newBstNode->left = NULL;
         newBstNode->right = NULL;
         newBstNode->parent = NULL;

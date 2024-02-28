@@ -1,12 +1,18 @@
 #ifndef __BINARY_SEARCH_TREE_H_
 #define __BINARY_SEARCH_TREE_H_
-
+#include <stdbool.h>
 #include "common.h"
 // #define ELEMENTTYPE int
+
+/* 红黑树结点颜色 */
+#define RED     true
+#define BLACK   false
 
 typedef struct RedBlackTreeNode
 {
     ELEMENTTYPE data;
+
+    bool color;
     struct RedBlackTreeNode *left;        /* 左子树 */
     struct RedBlackTreeNode *right;       /* 右子树 */
     #if 1
