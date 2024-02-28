@@ -784,6 +784,8 @@ static int RedBlackTreeDeleteNode(RedBlackTree *pBstree, RedBlackTreeNode *node)
                 node = NULL;
             }
             #endif
+            /* 根结点置为NULL, 否则有bug. */
+            pBstree->root = NULL;
         }
         else
         {
