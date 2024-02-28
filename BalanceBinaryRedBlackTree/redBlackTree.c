@@ -92,6 +92,42 @@ int RedBlackTreeInit(RedBlackTree **pBstree, int (*compareFunc)(ELEMENTTYPE val1
 /* 添加结点之后要做的事情 */
 static int insertNodeAfter(RedBlackTree *pBstree, RedBlackTreeNode *node)
 {
+    RedBlackTreeNode * parent = node->parent;
+
+    /* 根结点的的父结点为NULL. */
+    if (parent == NULL)
+    {
+        stainBlackColor(node);
+        return ON_SUCCESS;
+    }
+
+    // 如果父结点是黑色, 直接返回
+    if (RedBlackTreeNodeIsBlackColor(parent))
+    {
+        return ON_SUCCESS;
+    }
+    else
+    {
+        /* 程序执行到这里, 父结点一定是红色 */
+
+        /* 叔父结点 */
+        RedBlackTreeNode * uncleNode = RedBlackTreeNodeGetSiblingNode(parent);
+        /* 祖父结点 */
+        RedBlackTreeNode *grandNode = parent->parent;
+
+        if (RedBlackTreeNodeIsRedColor(uncleNode))
+        {
+            /* 叔父结点是红色, 就要进行上溢 */
+            stainBlackColor(parent);
+            stainBlackColor(uncleNode);
+
+            /* 把祖父结点当作是新添加的结点 */
+            insertNodeAfter(pBstree, grandNode);
+        }
+
+        /* 程序执行到这里: 叔父结点一定不是红色 todo... */
+    }
+
     return 0;
 }
 
