@@ -126,6 +126,32 @@ static int insertNodeAfter(RedBlackTree *pBstree, RedBlackTreeNode *node)
         }
 
         /* 程序执行到这里: 叔父结点一定不是红色 todo... */
+        /* 需要判断是LL, RR, LR, RL四种情况 */
+        if (RedBlackTreeNodeIsLeft(parent))     /* L? */
+        {
+            
+            if (RedBlackTreeNodeIsLeft(node))
+            {
+                /* LL */
+
+            }
+            else if (RedBlackTreeNodeIsRight(node))
+            {
+                /* LR */
+            }
+        }
+        else if (RedBlackTreeNodeIsRight(parent))   /* R? */
+        {
+            if (RedBlackTreeNodeIsLeft(node))
+            {
+                /* RL */
+
+            }
+            else if (RedBlackTreeNodeIsRight(node))
+            {
+                /* RR */
+            }
+        }
     }
 
     return 0;
