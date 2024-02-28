@@ -32,6 +32,8 @@ static int preOrderTravel(RedBlackTree *pBstree, RedBlackTreeNode *node);
 static int inOrderTravel(RedBlackTree *pBstree, RedBlackTreeNode *node);
 /* 添加结点之后要做的事情 */
 static int insertNodeAfter(RedBlackTree *pBstree, RedBlackTreeNode *node);
+/* 删除结点之后要做的事情 */
+static int removeNodeAfter(RedBlackTree *pBstree, RedBlackTreeNode *node);
 /* 后序遍历 */
 static int postOrderTravel(RedBlackTree *pBstree, RedBlackTreeNode *node);
 /* 获取当前结点的前驱结点 */
@@ -785,6 +787,14 @@ int RedBlackTreeGetHeight(RedBlackTree *pBstree, int *pHeight)
     return ret;
 }
 
+/* 删除结点之后要做的事情 */
+/* node参数是要删除的结点 */
+static int removeNodeAfter(RedBlackTree *pBstree, RedBlackTreeNode *node)
+{
+    return 0;
+}
+
+/* 二叉搜索树删除指定的结点 */
 static int RedBlackTreeDeleteNode(RedBlackTree *pBstree, RedBlackTreeNode *node)
 {
     int ret = 0;
